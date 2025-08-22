@@ -1,8 +1,8 @@
 // 📞 Constants - Configuraciones y constantes del proyecto
 
-// 📱 Números de teléfono +52 1 686 261 8688
+// 📱 Números de teléfono +52 1 55 4214 2715
 export const PHONE_NUMBERS = {
-  rsvp: "526862618688" // Reemplazar con el número real de WhatsApp
+  rsvp: "525542142715" // Reemplazar con el número real de WhatsApp
 }
 
 // 📍 Ubicaciones para Google Maps
@@ -13,7 +13,7 @@ export const LOCATIONS = {
 
 // 💬 Templates de mensajes para WhatsApp
 export const WHATSAPP_MESSAGES = {
-  rsvp: "¡Hola! Confirmo mi asistencia a la boda de Itzel y Carlos el 13 de septiembre de 2025."
+  rsvp: "¡Hola! Confirmo mi asistencia a la boda de Maribel y Godofredo el 13 de septiembre de 2025."
 }
 
 // 🎨 Configuraciones de tema
