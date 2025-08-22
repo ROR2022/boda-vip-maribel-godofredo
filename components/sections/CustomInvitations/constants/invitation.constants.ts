@@ -13,7 +13,7 @@ export const EVENT_INFO: EventInfo = {
   time: "6:00 PM",
   venue: "Eventos Casablanca",
   dressCode: "Formal -Blanco solo la novia-",
-  invitationUrl: "https://quince-premium-frida.vercel.app/"
+  invitationUrl: "https://boda-vip-maribel-godofredo.vercel.app/"
 } as const;
 
 export const SUGGESTED_MESSAGES = [
