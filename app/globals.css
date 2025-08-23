@@ -8,6 +8,23 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
+  /* === PALETA VIP MEXICANA === */
+  /* Colores Principales */
+  --color-verde-esmeralda: #0D6B4B;
+  --color-rojo-vino: #8B1C26;
+  --color-marfil: #F8F5F0;
+  
+  /* Acentos Premium */
+  --color-dorado: #C2A878;
+  --color-verde-suave: #556B2F;
+  --color-taupe: #D2B48C;
+  
+  /* Gradientes Principales */
+  --gradient-principal: linear-gradient(135deg, var(--color-verde-esmeralda), var(--color-dorado));
+  --gradient-secundario: linear-gradient(135deg, var(--color-rojo-vino), var(--color-verde-suave));
+  --gradient-fondo: linear-gradient(to bottom, var(--color-marfil), rgba(85, 107, 47, 0.05));
+  --gradient-vip: linear-gradient(135deg, var(--color-dorado), var(--color-verde-esmeralda));
+
   /* Updated color tokens to match wedding theme with sage green, gold, and white */
   --background: oklch(1 0 0); /* White */
   --foreground: oklch(0.35 0 0); /* Dark gray for text */
@@ -129,6 +146,236 @@
 
 /* Added custom fonts for wedding invitation */
 @import url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Open+Sans:wght@300;400;500;600&display=swap");
+
+/* ✨ VIP MEXICAN PALETTE ANIMATIONS & POLISH ✨ */
+
+/* 🎭 Animaciones VIP Premium */
+@keyframes shimmerVIP {
+  0% { 
+    background-position: -200% 0; 
+    filter: brightness(1);
+  }
+  50% { 
+    background-position: 200% 0; 
+    filter: brightness(1.1);
+  }
+  100% { 
+    background-position: -200% 0; 
+    filter: brightness(1);
+  }
+}
+
+@keyframes pulseTricolor {
+  0%, 100% { 
+    box-shadow: 0 0 0 0 var(--color-verde-esmeralda), 
+                0 0 20px var(--color-dorado); 
+  }
+  50% { 
+    box-shadow: 0 0 0 10px transparent, 
+                0 0 30px var(--color-rojo-vino); 
+  }
+}
+
+@keyframes floatMexican {
+  0%, 100% { 
+    transform: translateY(0px) rotate(0deg); 
+    filter: drop-shadow(0 5px 15px var(--color-dorado));
+  }
+  33% { 
+    transform: translateY(-10px) rotate(1deg); 
+    filter: drop-shadow(0 10px 25px var(--color-verde-esmeralda));
+  }
+  66% { 
+    transform: translateY(-5px) rotate(-1deg); 
+    filter: drop-shadow(0 15px 35px var(--color-rojo-vino));
+  }
+}
+
+@keyframes gradientFlow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes twinkleStars {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
+
+/* 🏆 Clases VIP Premium */
+
+/* 🌟 VIP Background gradient con transición suave */
+.vip-gradient-background {
+  background: linear-gradient(
+    135deg,
+    var(--color-marfil) 0%,
+    rgba(13, 107, 75, 0.1) 25%,
+    var(--color-marfil) 50%,
+    rgba(139, 28, 38, 0.1) 75%,
+    var(--color-marfil) 100%
+  );
+  background-size: 400% 400%;
+  animation: gradientFlow 15s ease-in-out infinite;
+  position: relative;
+}
+
+.vip-gradient-background::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    45deg,
+    transparent 30%,
+    rgba(194, 168, 120, 0.05) 50%,
+    transparent 70%
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+.vip-gradient-background > * {
+  position: relative;
+  z-index: 1;
+}
+
+.vip-shimmer {
+  background: linear-gradient(
+    45deg,
+    var(--color-verde-esmeralda) 0%,
+    var(--color-dorado) 25%,
+    var(--color-marfil) 50%,
+    var(--color-rojo-vino) 75%,
+    var(--color-verde-esmeralda) 100%
+  );
+  background-size: 400% 400%;
+  animation: shimmerVIP 3s ease-in-out infinite;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.vip-pulse-tricolor {
+  animation: pulseTricolor 2s ease-in-out infinite;
+}
+
+.vip-float-mexican {
+  animation: floatMexican 6s ease-in-out infinite;
+}
+
+.vip-gradient-flow {
+  background: linear-gradient(
+    -45deg,
+    var(--color-verde-esmeralda),
+    var(--color-marfil),
+    var(--color-rojo-vino),
+    var(--color-dorado)
+  );
+  background-size: 400% 400%;
+  animation: gradientFlow 8s ease infinite;
+}
+
+.vip-twinkle {
+  animation: twinkleStars 2s ease-in-out infinite;
+}
+
+/* 🎨 Mejoras de rendimiento */
+.vip-optimized {
+  will-change: transform, opacity, filter;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* � Optimizaciones específicas para mobile */
+@media (max-width: 768px) {
+  .vip-shimmer {
+    animation-duration: 2s;
+  }
+  
+  .vip-float-mexican {
+    animation-duration: 4s;
+  }
+  
+  .vip-gradient-flow {
+    animation-duration: 6s;
+  }
+  
+  /* Reducir efectos en dispositivos de bajo rendimiento */
+  @media (prefers-reduced-motion: reduce) {
+    .vip-shimmer,
+    .vip-float-mexican,
+    .vip-gradient-flow,
+    .vip-pulse-tricolor,
+    .vip-twinkle {
+      animation: none;
+    }
+  }
+}
+
+/* 📱 Utilidades para scrolling suave */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* 🌟 Efectos de hover premium */
+.vip-hover-lift {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.vip-hover-lift:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 
+    0 25px 50px -12px var(--color-dorado),
+    0 0 0 1px var(--color-verde-esmeralda);
+  filter: brightness(1.05);
+}
+
+/* ✨ Efectos de carga suave */
+.vip-fade-in {
+  animation: fadeInVIP 0.6s ease-out forwards;
+}
+
+@keyframes fadeInVIP {
+  from { 
+    opacity: 0; 
+    transform: translateY(20px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
+}
+
+/* 🎭 Efectos de texto premium */
+.vip-text-glow {
+  text-shadow: 
+    0 0 5px var(--color-dorado),
+    0 0 10px var(--color-dorado),
+    0 0 15px var(--color-dorado);
+}
+
+/* 🏆 Contenedores VIP premium */
+.vip-container {
+  background: linear-gradient(
+    135deg,
+    var(--color-marfil) 0%,
+    var(--color-marfil-suave) 100%
+  );
+  border: 2px solid var(--color-dorado);
+  border-radius: 1.5rem;
+  box-shadow: 
+    0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04),
+    0 0 0 1px var(--color-dorado);
+}
 
 /* Added custom CSS classes for wedding styling */
 .font-script {

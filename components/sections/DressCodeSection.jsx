@@ -3,10 +3,8 @@
 import React from 'react'
 import { Phone } from 'lucide-react'
 import { Button } from '../ui/button'
-import { Card, CardContent } from '../ui/card'
 import { weddingData } from '../../data/weddingData'
 import { useWhatsApp } from '../../hooks/useWhatsApp'
-import { getOverlayStyle } from '@/utils/overlay'
 import { useScrollAnimation } from '@/hooks/useScrollAnimation'
 import { getAnimationConfig } from '@/data/animationConfig'
 import { PiCoatHanger } from "react-icons/pi";
@@ -14,9 +12,8 @@ import Image from 'next/image'
 
 
 export default function DressCodeSection() {
-  const { dressCode, styling } = weddingData
+  const { dressCode } = weddingData
   const { confirmAttendance } = useWhatsApp()
-  const { dressCodeSection } = styling
 
   // Configurar animación de scroll
   const animationConfig = getAnimationConfig('dressCode')
@@ -30,24 +27,22 @@ export default function DressCodeSection() {
     <section
       ref={sectionRef}
       id="dresscode"
-      className="py-20"
+      className="py-20 relative overflow-hidden"
       style={{
-        /* backgroundImage: `url('/images/marco4.png')`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat', */
+        background: 'linear-gradient(135deg, var(--color-rojo-vino) 0%, var(--color-marfil) 50%, var(--color-verde-esmeralda) 100%)',
         position: 'relative',
-        zIndex: 5000, // Asegurar que la sección esté por encima de otros elementos
+        zIndex: 5000,
         ...animationStyle
       }}
     >
-      {/* Overlay configurable */}
-      {/* <div
-        style={getOverlayStyle(dressCodeSection)}
-        className="absolute inset-0 z-0"
-      ></div> */}
+      {/* Elementos decorativos VIP */}
+      <div className="absolute inset-0 opacity-6">
+        <div className="absolute top-12 right-12 w-32 h-32 rounded-full bg-dorado/50 animate-pulse"></div>
+        <div className="absolute bottom-12 left-12 w-28 h-28 rounded-full bg-marfil/60"></div>
+        <div className="absolute top-1/3 left-1/2 w-24 h-24 rounded-full bg-rojo-vino/40"></div>
+      </div>
 
-<div className='flex justify-center mb-4'>
+      <div className='flex justify-center mb-4'>
           <Image
             src="/images/decoration1a1.png"
             alt="Fecha"
@@ -56,55 +51,48 @@ export default function DressCodeSection() {
           />
         </div>
 
-      <div
+            <div 
         style={{
           animation: 'bounce1 2s ease 0s 1 normal forwards'
         }}
-        className="container mx-auto px-4  p-6 rounded-2xl">
+        className="container mx-auto px-4 bg-gradient-to-br from-marfil/90 to-marfil-suave/90 p-8 rounded-3xl border-2 border-dorado/40 shadow-2xl relative z-10"
+      >
         <div className="max-w-4xl mx-auto text-center space-y-8">
-          <h2 className="font-script text-4xl text-secondary">
-            Código de Vestimenta
+          <h2 className="text-6xl font-light mb-8 ">
+             Código de Vestimenta
           </h2>
 
-          <div className='flex justify-center'>
-            <PiCoatHanger className='w-12 h-12 text-secondary' />
-          </div>
-
-          <div 
-          style={{display:'none'}}
-          className="flex justify-center items-center gap-8 mb-8">
-            <div className="text-center">
-              <div className="w-24 h-32 bg-black rounded-lg mb-4 mx-auto"></div>
-              <p className="font-medium">Vestido</p>
-            </div>
-            <div className="text-center">
-              <div className="w-24 h-32 bg-gray-800 rounded-lg mb-4 mx-auto flex items-center justify-center">
-                <div className="w-16 h-24 bg-black rounded-sm"></div>
+          <div className="bg-gradient-to-br from-marfil to-marfil-suave border-2 border-dorado/30 shadow-xl hover:shadow-2xl transition-all duration-300 rounded-2xl p-8">
+            <div className="text-center space-y-6">
+              <div className="flex justify-center items-center text-6xl text-dorado mb-4">
+                <span>👗 </span>
+                <PiCoatHanger />
               </div>
-              <p className="font-medium">Traje</p>
+              <h3 className="text-3xl font-bold text-verde-esmeralda mb-3">
+                 {dressCode.type}
+              </h3>
+              <p className="text-lg text-rojo-vino/80">
+                ✨ {dressCode.note}
+              </p>
             </div>
           </div>
 
-          <h3 className="text-3xl font-bold text-foreground">{dressCode.type}</h3>
-          <p className="text-lg text-muted-foreground">{dressCode.note}</p>
-
-          <Card className="max-w-md mx-auto bg-primary/10 border-primary/20">
-            <CardContent className="p-8 text-center space-y-4">
-              <h3 className="font-script text-3xl text-foreground">
-                Confirma tu asistencia
-              </h3>
-              <p className="text-muted-foreground">
-                {dressCode.confirmationMessage}
-              </p>
-              <Button
-                onClick={confirmAttendance}
-                className="bg-green-600 hover:bg-green-700 text-white rounded-full px-8 py-3 w-full"
-              >
-                <Phone className="w-4 h-4 mr-2" />
-                Confirmar asistencia
-              </Button>
-            </CardContent>
-          </Card>
+          <div className="bg-gradient-to-r from-rojo-vino/10 via-marfil to-verde-esmeralda/10 rounded-2xl p-8 border-2 border-dorado/30 shadow-xl">
+            <h3 className="text-3xl font-bold text-verde-esmeralda mb-6">
+              💌 Confirma tu asistencia
+            </h3>
+            <p className="text-xl text-rojo-vino/80 mb-6">
+              {dressCode.confirmationMessage}
+            </p>
+            <Button
+              onClick={confirmAttendance}
+              size="lg"
+              className="bg-gradient-to-r from-verde-esmeralda via-dorado to-rojo-vino hover:bg-gradient-to-l text-white rounded-full px-8 py-4 shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 border-2 border-dorado/30 text-lg"
+            >
+              <Phone className="w-5 h-5 mr-2" />
+              📱 Confirmar
+            </Button>
+          </div>
         </div>
       </div>
     </section>

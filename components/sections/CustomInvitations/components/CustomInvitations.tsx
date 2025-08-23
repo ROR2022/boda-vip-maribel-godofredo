@@ -56,16 +56,20 @@ const CustomInvitations: React.FC = () => {
       <div
       style={{
         position: "relative",
-        minHeight: "80px"
+        minHeight: "80px",
+        background: "linear-gradient(135deg, var(--color-marfil) 0%, var(--color-marfil-suave) 100%)"
       }}
-      className="my-4"
+      className="my-4 border border-dorado/20 rounded-2xl"
       >
       <div 
       style={{
         zIndex: 8000,
       }}
       className="absolute top-4 right-4 z-50">
-        {/* Panel de autenticación */}
+        <div className="flex justify-center items-center">
+        <h4 className="text-lg font-semibold text-red-400 text-center" >Invitaciones Personalizadas VIP</h4>
+        </div>
+        {/* Panel de autenticación VIP */}
         <AuthPanel
           authState={authState}
           onUpdateAuth={updateAuthState}
@@ -81,10 +85,14 @@ const CustomInvitations: React.FC = () => {
   return (
     <section 
     
-    className="py-8 px-4 relative min-h-screen overflow-hidden bg-gradient-to-br from-green-100 via-green-50 to-white">
-      
-
-      
+    className="py-8 px-4 relative min-h-screen overflow-hidden bg-gradient-to-br from-marfil via-marfil-suave to-white">
+      {/* Elementos decorativos VIP */}
+      <div className="absolute inset-0 opacity-5">
+        <div className="absolute top-20 left-20 w-40 h-40 rounded-full bg-verde-esmeralda"></div>
+        <div className="absolute bottom-20 right-20 w-32 h-32 rounded-full bg-rojo-vino"></div>
+        <div className="absolute top-1/2 left-1/3 w-24 h-24 rounded-full bg-dorado"></div>
+        <div className="absolute top-1/4 right-1/4 w-16 h-16 rounded-full bg-oro-antiguo"></div>
+      </div>
 
       <div className="max-w-4xl mx-auto mt-32 text-center relative z-10">
         {/* <h1 className="bg-gradient-to-r from-green-700 via-green-500 to-green-700 bg-clip-text text-transparent text-4xl md:text-5xl font-bold mb-6 drop-shadow-sm">
@@ -105,20 +113,27 @@ const CustomInvitations: React.FC = () => {
         )} */}
 
         {authState.isAuthenticated && (
-          <div className="max-w-4xl mx-auto mt-12 space-y-8">
-            {/* Formulario principal */}
-            <div className="bg-white/90 rounded-2xl p-8 border-2 border-green-200 shadow-lg relative z-20">
-              <h2 className="text-2xl font-bold text-green-700 mb-6">📝 Crear Invitación Personalizada</h2>
+          <div className="max-w-4xl mx-auto mt-12 space-y-8 relative z-10">
+            {/* Formulario principal VIP */}
+            <div className="bg-gradient-to-br from-marfil to-white rounded-2xl p-8 border-2 border-dorado/30 shadow-2xl relative z-20">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 bg-gradient-to-r from-verde-esmeralda to-rojo-vino rounded-full flex items-center justify-center">
+                  <span className="text-white text-lg">📝</span>
+                </div>
+                <h2 className="text-2xl font-bold text-verde-oscuro">
+                  Crear Invitación Personalizada VIP
+                </h2>
+              </div>
               
               <InvitationForm
                 formData={formData}
                 onUpdateFormData={updateFormData}
               />
 
-              {/* Mensaje de error de descarga */}
+              {/* Mensaje de error de descarga VIP */}
               {uiState.downloadError && (
-                <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
-                  <p className="text-sm text-red-600">❌ Error: {uiState.downloadError}</p>
+                <div className="mt-4 p-4 bg-gradient-to-r from-rojo-vino/10 to-rojo-cardenal/10 border-2 border-rojo-vino/30 rounded-xl">
+                  <p className="text-sm text-rojo-vino font-medium">❌ Error: {uiState.downloadError}</p>
                 </div>
               )}
 
@@ -129,14 +144,29 @@ const CustomInvitations: React.FC = () => {
                 onDownload={handleDownload}
               />
 
-              {/* Instrucciones de descarga */}
-              <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                <h4 className="text-sm font-semibold text-blue-800 mb-2">💡 Consejos para la descarga:</h4>
-                <ul className="text-xs text-blue-700 space-y-1">
-                  <li>• La imagen se descargará en formato PNG de alta calidad</li>
-                  <li>• Asegúrate de completar todos los campos obligatorios</li>
-                  <li>• La descarga puede tardar unos segundos en procesarse</li>
-                  <li>• El archivo se guardará con el nombre del invitado</li>
+              {/* Instrucciones de descarga VIP */}
+              <div className="mt-6 p-6 bg-gradient-to-r from-dorado/10 to-oro-antiguo/10 border-2 border-dorado/30 rounded-xl">
+                <h4 className="text-sm font-semibold text-verde-oscuro mb-3 flex items-center gap-2">
+                  <span className="w-6 h-6 bg-dorado rounded-full flex items-center justify-center text-white text-xs">💡</span>
+                  Consejos VIP para la descarga:
+                </h4>
+                <ul className="text-xs text-verde-bosque space-y-2">
+                  <li className="flex items-start gap-2">
+                    <span className="text-dorado">•</span>
+                    <span>La imagen se descargará en formato PNG de alta calidad premium</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-dorado">•</span>
+                    <span>Asegúrate de completar todos los campos obligatorios</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-dorado">•</span>
+                    <span>La descarga puede tardar unos segundos en procesarse</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-dorado">•</span>
+                    <span>El archivo se guardará con el nombre del invitado</span>
+                  </li>
                 </ul>
               </div>
             </div>
@@ -146,17 +176,48 @@ const CustomInvitations: React.FC = () => {
               <InvitationPreview ref={invitationRef} formData={formData} />
             )}
 
-            {/* Información adicional */}
-            <div className="bg-white/80 rounded-2xl p-6 border border-green-200 relative z-20">
-              <h3 className="text-lg font-bold text-green-700 mb-4">ℹ️ Información del Evento</h3>
-              <div className="grid md:grid-cols-2 gap-4 text-sm text-gray-700">
-                <div>
-                  <p><strong>📅 Fecha:</strong> {EVENT_INFO.date}</p>
-                  <p><strong>🕖 Hora:</strong> {EVENT_INFO.time}</p>
+            {/* Información adicional VIP */}
+            <div className="bg-gradient-to-r from-marfil to-marfil-suave rounded-2xl p-8 border-2 border-verde-esmeralda/20 shadow-xl relative z-20">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 bg-gradient-to-r from-dorado to-oro-antiguo rounded-full flex items-center justify-center">
+                  <span className="text-verde-oscuro text-lg">ℹ️</span>
                 </div>
-                <div>
-                  <p><strong>📍 Lugar:</strong> {EVENT_INFO.venue}</p>
-                  <p><strong>👗 Código de vestimenta:</strong> {EVENT_INFO.dressCode}</p>
+                <h3 className="text-lg font-bold text-verde-oscuro">
+                  Información del Evento VIP
+                </h3>
+              </div>
+              <div className="grid md:grid-cols-2 gap-6 text-sm">
+                <div className="space-y-3">
+                  <div className="flex items-center gap-3 p-3 bg-verde-esmeralda/10 rounded-lg border border-verde-esmeralda/20">
+                    <span className="w-8 h-8 bg-verde-esmeralda rounded-full flex items-center justify-center text-white text-xs">📅</span>
+                    <div>
+                      <p className="font-semibold text-verde-oscuro">Fecha:</p>
+                      <p className="text-verde-bosque">{EVENT_INFO.date}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3 p-3 bg-rojo-vino/10 rounded-lg border border-rojo-vino/20">
+                    <span className="w-8 h-8 bg-rojo-vino rounded-full flex items-center justify-center text-white text-xs">🕖</span>
+                    <div>
+                      <p className="font-semibold text-verde-oscuro">Hora:</p>
+                      <p className="text-verde-bosque">{EVENT_INFO.time}</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="space-y-3">
+                  <div className="flex items-center gap-3 p-3 bg-dorado/10 rounded-lg border border-dorado/20">
+                    <span className="w-8 h-8 bg-dorado rounded-full flex items-center justify-center text-verde-oscuro text-xs">📍</span>
+                    <div>
+                      <p className="font-semibold text-verde-oscuro">Lugar:</p>
+                      <p className="text-verde-bosque">{EVENT_INFO.venue}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3 p-3 bg-oro-antiguo/10 rounded-lg border border-oro-antiguo/20">
+                    <span className="w-8 h-8 bg-oro-antiguo rounded-full flex items-center justify-center text-verde-oscuro text-xs">👗</span>
+                    <div>
+                      <p className="font-semibold text-verde-oscuro">Código de vestimenta:</p>
+                      <p className="text-verde-bosque">{EVENT_INFO.dressCode}</p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

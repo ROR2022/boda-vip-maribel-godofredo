@@ -2,7 +2,7 @@
 
 "use client"
 
-import { Play, Pause, Volume2, RotateCcw } from 'lucide-react'
+import { Play, Pause, RotateCcw } from 'lucide-react'
 import { useAudioPlayer } from '@/hooks/useAudioPlayer'
 import { weddingData } from '@/data/weddingData'
 
@@ -31,20 +31,25 @@ function AudioPlayer() {
 
   return (
     <div 
-    style={{
-      zIndex: 6000,
-    }}
-    className="flex gap-3 justify-center items-center fixed bottom-10 right-10 group bg-slate-500 rounded-xl p-1">
-       <div>
-          <h3 style={{color: 'white', fontSize: '1rem', fontFamily: 'cursive', fontStyle: 'italic'}}>
-            Nuestra Canción
-          </h3>
+      style={{
+        zIndex: 6000,
+
+      }}
+      className="flex gap-3 justify-center items-center fixed bottom-10 right-10 group bg-slate-200  rounded-2xl p-3 border-2 border-dorado/40 shadow-2xl vip-hover-lift vip-optimized"
+    >
+      <div
+      style={{display:'none'}}
+      >
+        <h3 
+        className="text-verde-esmeralda text-sm font-medium font-serif italic">
+          🎵 Nuestra Canción
+        </h3>
         </div>
       
       
       <div className="relative"> 
         
-        {/* Anillo de progreso */}
+        {/* Anillo de progreso VIP */}
         <div className="absolute inset-0 w-14 h-14">
           <svg className="w-full h-full transform -rotate-90" viewBox="0 0 24 24">
             <circle
@@ -54,7 +59,7 @@ function AudioPlayer() {
               fill="none"
               stroke="currentColor"
               strokeWidth="1"
-              className="text-white/20"
+              className="text-dorado/30"
             />
             <circle
               cx="12"
@@ -64,7 +69,7 @@ function AudioPlayer() {
               stroke="currentColor"
               strokeWidth="2"
               strokeLinecap="round"
-              className="text-wedding-gold transition-all duration-300"
+              className="text-gradient-to-r from-verde-esmeralda to-rojo-vino transition-all duration-300 vip-twinkle"
               style={{
                 strokeDasharray: `${2 * Math.PI * 10}`,
                 strokeDashoffset: `${2 * Math.PI * 10 * (1 - progress)}`,
@@ -74,11 +79,23 @@ function AudioPlayer() {
         </div>
 
         {/* Botón principal */}
+                {/* Botón principal VIP */}
         <button
           onClick={toggle}
           disabled={isLoading}
-          className="relative w-14 h-14 bg-gradient-to-br from-wedding-sage to-wedding-sage-dark hover:from-wedding-sage-dark hover:to-wedding-sage text-white rounded-full shadow-lg hover:shadow-xl transform transition-all duration-300 ease-out hover:scale-110 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed border-2 border-white/20 hover:border-white/40"
-          aria-label={isPlaying ? 'Pausar música' : 'Reproducir música'}
+          className="
+            relative w-14 h-14 rounded-full 
+            bg-gradient-to-br from-verde-esmeralda via-dorado to-rojo-vino
+            hover:from-rojo-vino hover:via-dorado hover:to-verde-esmeralda
+            text-white shadow-xl
+            transition-all duration-300 
+            hover:scale-110 active:scale-95
+            focus:outline-none focus:ring-4 focus:ring-dorado/50
+            disabled:opacity-70 disabled:cursor-not-allowed
+            vip-pulse-tricolor vip-optimized
+            group-hover:shadow-2xl
+          "
+          aria-label={isPlaying ? "Pausar música" : "Reproducir música"}
         >
           <div className="absolute inset-0 bg-white/10 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
           

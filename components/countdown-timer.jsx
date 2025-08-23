@@ -31,25 +31,40 @@ export default function CountdownTimer() {
   }, [])
 
   return (
-    <div className="flex justify-center items-center gap-4 py-8">
-      <div className="text-center">
-        <div className="text-4xl font-bold text-primary">{timeLeft.days}</div>
-        <div className="text-sm text-muted-foreground">DÍAS</div>
+    <div 
+    className="grid grid-cols-2 justify-center items-center gap-6 py-8">
+      <div className="text-center vip-float-mexican">
+        <div className="w-20 h-20 bg-gradient-to-br from-verde-esmeralda to-dorado rounded-2xl flex items-center justify-center shadow-xl border-2 border-marfil/30 vip-pulse-tricolor">
+          <div className="text-3xl font-bold text-white vip-shimmer">{timeLeft.days}</div>
+        </div>
+        <div className="text-sm text-rojo-vino/80 font-medium mt-2">📅 DÍAS</div>
       </div>
-      <div className="text-2xl text-primary">:</div>
-      <div className="text-center">
-        <div className="text-4xl font-bold text-primary">{timeLeft.hours}</div>
-        <div className="text-sm text-muted-foreground">HORAS</div>
+      
+      
+      
+      <div className="text-center vip-float-mexican" style={{ animationDelay: '0.5s' }}>
+        <div className="w-20 h-20 bg-gradient-to-br from-rojo-vino to-dorado rounded-2xl flex items-center justify-center shadow-xl border-2 border-marfil/30 vip-pulse-tricolor">
+          <div className="text-3xl font-bold text-white vip-shimmer">{timeLeft.hours}</div>
+        </div>
+        <div className="text-sm text-verde-esmeralda/80 font-medium mt-2">⏰ HORAS</div>
       </div>
-      <div className="text-2xl text-primary">:</div>
-      <div className="text-center">
-        <div className="text-4xl font-bold text-primary">{timeLeft.minutes}</div>
-        <div className="text-sm text-muted-foreground">MINUTOS</div>
+      
+      
+      
+      <div className="text-center vip-float-mexican" style={{ animationDelay: '1s' }}>
+        <div className="w-20 h-20 bg-gradient-to-br from-dorado to-verde-esmeralda rounded-2xl flex items-center justify-center shadow-xl border-2 border-marfil/30 vip-pulse-tricolor">
+          <div className="text-3xl font-bold text-white vip-shimmer">{timeLeft.minutes}</div>
+        </div>
+        <div className="text-sm text-rojo-vino/80 font-medium mt-2">⏳ MINUTOS</div>
       </div>
-      <div className="text-2xl text-primary">:</div>
-      <div className="text-center">
-        <div className="text-4xl font-bold text-primary">{timeLeft.seconds}</div>
-        <div className="text-sm text-muted-foreground">SEGUNDOS</div>
+      
+      
+      
+      <div className="text-center vip-float-mexican" style={{ animationDelay: '1.5s' }}>
+        <div className="w-20 h-20 bg-gradient-to-br from-verde-esmeralda to-rojo-vino rounded-2xl flex items-center justify-center shadow-xl border-2 border-marfil/30 vip-pulse-tricolor">
+          <div className="text-3xl font-bold text-white vip-shimmer">{timeLeft.seconds}</div>
+        </div>
+        <div className="text-sm text-verde-esmeralda/80 font-medium mt-2">⚡ SEGUNDOS</div>
       </div>
     </div>
   )

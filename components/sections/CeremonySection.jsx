@@ -5,15 +5,11 @@ import Image from "next/image";
 import { MapPin, Clock } from "lucide-react";
 import { Button } from "../ui/button";
 import { weddingData } from "../../data/weddingData";
-import { useMapNavigation } from "../../hooks/useMapNavigation";
-import { getOverlayStyle } from "@/utils/overlay";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { getAnimationConfig } from "@/data/animationConfig";
 
 export default function CeremonySection() {
-  const { ceremony, couple, styling } = weddingData;
-  const { goToCeremony } = useMapNavigation();
-  const { ceremonySection } = styling;
+  const { ceremony, couple } = weddingData;
 
   // Configurar animación de scroll
   const animationConfig = getAnimationConfig("ceremony");
@@ -27,32 +23,29 @@ export default function CeremonySection() {
     <section
       ref={sectionRef}
       style={{
-        /* backgroundImage: `url('/images/marco2.png')`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat", */
+        background: 'linear-gradient(135deg, var(--color-rojo-vino) 0%, var(--color-marfil) 50%, var(--color-verde-esmeralda) 100%)',
         position: "relative",
         zIndex: 5000,
         ...animationStyle,
       }}
       id="ceremony"
-      className="py-20"
+      className="py-20 relative overflow-hidden"
     >
-      {/* Overlay configurable */}
-      {/* <div
-        style={getOverlayStyle(ceremonySection)}
-        className="absolute inset-0 z-0"
-      ></div> */}
+      {/* Elementos decorativos VIP */}
+      <div className="absolute inset-0 opacity-5">
+        <div className="absolute top-10 left-10 w-24 h-24 rounded-full bg-verde-esmeralda"></div>
+        <div className="absolute bottom-10 right-10 w-20 h-20 rounded-full bg-rojo-vino"></div>
+        <div className="absolute top-1/2 left-1/3 w-16 h-16 rounded-full bg-dorado"></div>
+      </div>
 
       <div
         style={{
-          // Mantener animación CSS pero optimizada
-          animation: "bounce1 1.5s ease 0s 1 normal forwards", // Más rápida
-          willChange: "transform, opacity", // Optimización para móviles
+          animation: "bounce1 1.5s ease 0s 1 normal forwards",
+          willChange: "transform, opacity",
           position: "relative",
           zIndex: 4000,
         }}
-        className="container mx-auto px-4  p-6 rounded-2xl"
+        className="container mx-auto px-4 p-8 rounded-3xl border-2 border-dorado/30 shadow-2xl"
       >
         <div
           style={{
@@ -100,30 +93,30 @@ export default function CeremonySection() {
                   }}
                   className="space-y-4"
                 >
-                   <div className="text-8xl text-secondary font-script mb-4">
-            {couple.initials}
-          </div>
-                  <h4 className="text-2xl font-bold text-foreground">
-                    {ceremony.name}
+                  <div className="text-8xl bg-gradient-to-r from-verde-esmeralda via-dorado to-rojo-vino bg-clip-text text-transparent font-script mb-4">
+                    {couple.initials}
+                  </div>
+                  <h4 className="text-2xl font-bold text-verde-esmeralda">
+                    🏛️ {ceremony.name}
                   </h4>
-                  <div className="flex items-center justify-center gap-2">
-                    <Clock className="w-6 h-6 text-primary" />
+                  <div className="flex items-center justify-center gap-2 text-rojo-vino/80">
+                    <Clock className="w-6 h-6 text-dorado" />
                     <span className="text-2xl font-medium">
                       {ceremony.time}
                     </span>
                   </div>
-                  <p className="text-muted-foreground">{ceremony.address}</p>
+                  <p className="text-verde-esmeralda/70">📍 {ceremony.address}</p>
 
                   <Button
                     style={{
                       position: "relative",
-                      zIndex: 5000, // Asegurar que el botón esté por encima de otros elementos
+                      zIndex: 5000,
                     }}
                     onClick={() => window.open(ceremony.ubiLink, "_blank")}
-                    className="bg-slate-800 hover:text-black hover:bg-slate-400 text-white rounded-full px-8 py-3"
+                    className="bg-slate-800 text-white hover:text-black rounded-full px-8 py-3 shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 border-2 border-dorado/30"
                   >
                     <MapPin className="w-4 h-4 mr-2" />
-                    Ir al mapa
+                    🗺️ Ir al mapa
                   </Button>
                 </div>
               </div>

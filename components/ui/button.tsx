@@ -5,7 +5,7 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
@@ -18,6 +18,14 @@ const buttonVariants = cva(
           "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
+        // VIP Mexican Palette Variants
+        emerald: "bg-verde-esmeralda text-white hover:bg-verde-bosque transition-all duration-300 shadow-lg hover:shadow-xl",
+        wine: "bg-rojo-vino text-white hover:bg-rojo-cardenal transition-all duration-300 shadow-lg hover:shadow-xl",
+        ivory: "bg-marfil text-verde-esmeralda border border-verde-esmeralda/20 hover:bg-verde-esmeralda hover:text-white transition-all duration-300",
+        gold: "bg-dorado text-verde-oscuro hover:bg-oro-antiguo transition-all duration-300 shadow-lg hover:shadow-xl",
+        elegant: "bg-gradient-to-r from-verde-esmeralda to-verde-bosque text-white hover:from-verde-bosque hover:to-verde-esmeralda transition-all duration-500 shadow-lg hover:shadow-xl",
+        luxury: "bg-gradient-to-r from-rojo-vino to-rojo-cardenal text-white hover:from-rojo-cardenal hover:to-rojo-vino transition-all duration-500 shadow-lg hover:shadow-xl",
+        premium: "bg-gradient-to-r from-dorado via-oro-antiguo to-dorado text-verde-oscuro hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl",
       },
       size: {
         default: "h-10 px-4 py-2",

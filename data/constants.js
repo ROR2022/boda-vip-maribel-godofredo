@@ -16,12 +16,28 @@ export const WHATSAPP_MESSAGES = {
   rsvp: "¡Hola! Confirmo mi asistencia a la boda de Maribel y Godofredo el 13 de septiembre de 2025."
 }
 
-// 🎨 Configuraciones de tema
+// 🎨 Configuraciones de tema - Paleta VIP Mexicana
 export const THEME_CONFIG = {
   colors: {
-    primary: "sage-green", // Verde salvia
-    secondary: "gold", // Dorado
-    background: "white"
+    // Colores principales tricolor mexicano
+    primary: "verde-esmeralda", // #0D6B4B
+    secondary: "rojo-vino", // #8B1C26
+    background: "marfil", // #F8F5F0
+    
+    // Acentos premium
+    accent: "dorado", // #C2A878
+    muted: "verde-suave", // #556B2F
+    neutral: "taupe", // #D2B48C
+    
+    // Para compatibilidad con código existente
+    "sage-green": "verde-esmeralda", 
+    gold: "dorado"
+  },
+  gradients: {
+    principal: "var(--gradient-principal)",
+    secundario: "var(--gradient-secundario)",
+    fondo: "var(--gradient-fondo)",
+    vip: "var(--gradient-vip)"
   },
   fonts: {
     script: "Playfair Display",

@@ -117,6 +117,7 @@ export default function WelcomeMessage({ onContinue }) {
           alt="Manos románticas"
           width={400}
           height={128}
+          style={{ width: 'auto', height: 'auto' }}
           className="w-full h-full object-cover object-top"
         />
       </div>

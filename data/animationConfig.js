@@ -1,5 +1,20 @@
 // 🎬 Animation Configuration - Configuración centralizada de animaciones por sección
 
+// 🎨 Configuraciones de color para animaciones VIP Mexicana
+export const animationColors = {
+  reveal: 'var(--color-verde-esmeralda)',
+  highlight: 'var(--color-dorado)',
+  accent: 'var(--color-rojo-vino)',
+  background: 'var(--color-marfil)',
+  
+  // Gradientes para animaciones
+  gradients: {
+    principal: 'var(--gradient-principal)',
+    secundario: 'var(--gradient-secundario)',
+    vip: 'var(--gradient-vip)'
+  }
+}
+
 export const sectionAnimations = {
   hero: {
     type: 'background',
