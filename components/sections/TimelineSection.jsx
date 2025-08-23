@@ -21,12 +21,12 @@ export default function TimelineSection() {
     <section
       ref={sectionRef}
       style={{
-        background: 'linear-gradient(135deg, var(--color-rojo-vino) 0%, var(--color-marfil) 50%, var(--color-verde-esmeralda) 100%)',
+        //background: 'linear-gradient(135deg, var(--color-rojo-vino) 0%, var(--color-marfil) 50%, var(--color-verde-esmeralda) 100%)',
         position: 'relative',
         ...animationStyle
       }}
       id="timeline" 
-      className="py-20 relative overflow-hidden"
+      className="py-20 relative overflow-hidden bg-mexican"
     >
       {/* Elementos decorativos VIP */}
       <div className="absolute inset-0 opacity-8">

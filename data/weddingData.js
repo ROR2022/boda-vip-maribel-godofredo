@@ -4,7 +4,7 @@ export const weddingData = {
   couple: {
     bride: "Maribel",
     groom: "Godofredo",
-    initials: "M & G",
+    initials: "G & M",
     quote: "Te elijo, hoy, mañana y siempre. En cada paso, en cada sueño, en cada latido...",
     mainImage: "/images/boda8.jpeg",
     sunsetImage: "/images/campo1.png"
@@ -25,10 +25,10 @@ export const weddingData = {
 
   // 📅 Información de fecha y evento
   wedding: {
-    date: "2025-09-13T19:00:00",
+    date: "2025-11-29T19:00:00",
     dayName: "SABADO",
-    day: "13",
-    month: "SEPTIEMBRE",
+    day: "29",
+    month: "NOVIEMBRE",
     year: "2025",
     title: "Nos Casamos"
   },
@@ -36,10 +36,10 @@ export const weddingData = {
   // ⛪ Información de la ceremonia
   ceremony: {
     time: "7:00 p.m",
-    name: "Monarcas Jardin de Eventos",
-    address: "Calz de los Monarcas, Mexicali, 21353, BC, MX",
+    name: "Salón Colibrí",
+    address: "C. Morelos Manzana 001, La Conchita, 56600 Chalco de Díaz Covarrubias, Méx.",
     type: "Ceremonia",
-    ubiLink: "https://maps.app.goo.gl/nEwQ1CXVF7Wa1omEA"
+    ubiLink: "https://maps.app.goo.gl/9kxZzHWJXKgHsmqKA"
   },
 
   // 🎉 Información de la recepción

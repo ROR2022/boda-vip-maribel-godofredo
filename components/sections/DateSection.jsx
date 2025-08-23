@@ -23,12 +23,11 @@ export default function DateSection() {
     <section 
       ref={sectionRef}
       style={{
-        background: "linear-gradient(135deg, var(--color-rojo-vino) 0%, var(--color-marfil) 50%, var(--color-verde-esmeralda) 100%)",
         position: 'relative',
         ...animationStyle
       }}
       id="date" 
-      className="py-20 relative overflow-hidden"
+      className="py-20 relative overflow-hidden bg-mexican"
     >
       {/* Elementos decorativos VIP */}
       <div className="absolute inset-0 opacity-8">
@@ -86,8 +85,9 @@ export default function DateSection() {
             </div>
           </div>
 
-          <h3 className="font-script text-4xl text-dorado">
-            ⏰ {messages.countdownTitle}
+          <h3 className="flex flex-col font-script text-4xl text-dorado">
+             <span>{messages.countdownTitle}</span>
+             <span>⏰</span>
           </h3>
 
           <div className="bg-gradient-to-r from-rojo-vino/10 via-marfil to-verde-esmeralda/10 rounded-2xl p-6 border-2 border-dorado/30 shadow-lg">

@@ -13,7 +13,7 @@ export default function HeroSection() {
 
   return (
     <section 
-      className="min-h-screen flex flex-col justify-center items-center relative"
+      className="min-h-screen flex flex-col justify-center items-center relative border-mexican"
       style={{
         backgroundImage: `url('${'/images/boda8.jpeg'}')`,
         backgroundSize: 'cover',
@@ -58,9 +58,9 @@ export default function HeroSection() {
 
         {/* Título principal con animación shimmer */}
         <h1 
-          className="text-6xl md:text-8xl mb-6 font-bold"
+          className="text-6xl md:text-8xl mb-6 font-bold text-blue-800"
           style={{ 
-            color: '#0D6B4B',
+            //color: '#000',
             textShadow: '2px 2px 4px rgba(0,0,0,0.3)'
           }}
         >
@@ -69,27 +69,28 @@ export default function HeroSection() {
 
         {/* Iniciales grandes con gradiente animado */}
         <div 
-          className="text-7xl mb-4 font-bold vip-pulse-tricolor"
+          className="text-7xl mb-4 font-bold vip-pulse-tricolor text-emerald-500"
           style={{ 
             background: `linear-gradient(45deg, #C2A878, #0D6B4B, #8B1C26, #C2A878)`,
             backgroundSize: '300% 300%',
             WebkitBackgroundClip: 'text',
             backgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
+            //color: '#000',
             textShadow: 'none'
+
           }}
         >
           {couple.initials}
         </div>
 
         {/* Nombres de la pareja */}
-        <h2 className="flex flex-col text-4xl md:text-5xl mb-8 font-semibold bg-slate-200 bg-opacity-40">
-          <span style={{ color: '#0D6B4B' }}>{couple.groom}</span>
+        <h2 className="flex flex-col text-4xl md:text-5xl mb-8 font-semibold bg-slate-200 bg-opacity-40 text-purple-700">
+          <span >{couple.groom}</span>
           <span 
             className="mx-4 text-6xl"
             style={{ color: '#8B1C26' }}
           > & </span>
-          <span style={{ color: '#0D6B4B' }}>{couple.bride}</span>
+          <span >{couple.bride}</span>
         </h2>
 
         {/* Corazón decorativo con animación */}

@@ -23,13 +23,12 @@ export default function CeremonySection() {
     <section
       ref={sectionRef}
       style={{
-        background: 'linear-gradient(135deg, var(--color-rojo-vino) 0%, var(--color-marfil) 50%, var(--color-verde-esmeralda) 100%)',
         position: "relative",
         zIndex: 5000,
         ...animationStyle,
       }}
       id="ceremony"
-      className="py-20 relative overflow-hidden"
+      className="py-20 relative overflow-hidden bg-mexican"
     >
       {/* Elementos decorativos VIP */}
       <div className="absolute inset-0 opacity-5">
@@ -93,10 +92,10 @@ export default function CeremonySection() {
                   }}
                   className="space-y-4"
                 >
-                  <div className="text-8xl bg-gradient-to-r from-verde-esmeralda via-dorado to-rojo-vino bg-clip-text text-transparent font-script mb-4">
+                  <div className="text-8xl text-black font-script mb-4">
                     {couple.initials}
                   </div>
-                  <h4 className="text-2xl font-bold text-verde-esmeralda">
+                  <h4 className="text-2xl font-bold text-black">
                     🏛️ {ceremony.name}
                   </h4>
                   <div className="flex items-center justify-center gap-2 text-rojo-vino/80">

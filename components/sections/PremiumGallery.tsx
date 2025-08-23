@@ -100,9 +100,9 @@ export function PremiumGallery() {
   return (
     <section 
     style={{
-      background: 'linear-gradient(135deg, var(--color-rojo-vino) 0%, var(--color-marfil) 50%, var(--color-verde-esmeralda) 100%)',
+      //background: 'linear-gradient(135deg, var(--color-rojo-vino) 0%, var(--color-marfil) 50%, var(--color-verde-esmeralda) 100%)',
     }}
-    className="py-16 px-4 relative overflow-hidden">
+    className="py-16 px-4 relative overflow-hidden bg-mexican">
       {/* Decorative elements */}
       <div className="absolute inset-0 opacity-5">
         <div className="absolute top-10 left-10 w-32 h-32 rounded-full bg-verde-esmeralda"></div>

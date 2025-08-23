@@ -85,7 +85,7 @@ function AudioPlayer() {
           disabled={isLoading}
           className="
             relative w-14 h-14 rounded-full 
-            bg-gradient-to-br from-verde-esmeralda via-dorado to-rojo-vino
+            bg-slate-400
             hover:from-rojo-vino hover:via-dorado hover:to-verde-esmeralda
             text-white shadow-xl
             transition-all duration-300 

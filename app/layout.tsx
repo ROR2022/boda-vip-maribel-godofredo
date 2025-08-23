@@ -16,8 +16,8 @@ const openSans = Open_Sans({
 })
 
 export const metadata: Metadata = {
-  title: "Maribel & Godofredo - Invitación de Boda",
-  description: "Te invitamos a celebrar nuestro amor - 13 de Septiembre 2025",
+  title: "Godofredo & Maribel - Invitación de Boda",
+  description: "Te invitamos a celebrar nuestro amor - 29 de Noviembre 2025",
   generator: "",
 }
 

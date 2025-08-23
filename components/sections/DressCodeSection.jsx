@@ -27,9 +27,9 @@ export default function DressCodeSection() {
     <section
       ref={sectionRef}
       id="dresscode"
-      className="py-20 relative overflow-hidden"
+      className="py-20 relative overflow-hidden bg-mexican"
       style={{
-        background: 'linear-gradient(135deg, var(--color-rojo-vino) 0%, var(--color-marfil) 50%, var(--color-verde-esmeralda) 100%)',
+        //background: 'linear-gradient(135deg, var(--color-rojo-vino) 0%, var(--color-marfil) 50%, var(--color-verde-esmeralda) 100%)',
         position: 'relative',
         zIndex: 5000,
         ...animationStyle
