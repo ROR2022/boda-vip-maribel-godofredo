@@ -20,60 +20,24 @@ export default function WelcomeMessage({ onContinue }) {
   return (
     <div 
     style={{
-        backgroundImage: `url('/images/marco1.png')`,
+        backgroundImage: `url('/images/ramo1.png')`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
     }}
     className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
-      {/* Decorative floral elements */}
-     {/*  <div className="absolute top-0 left-0 w-64 h-64 opacity-30">
-        <Image
-          src="/placeholder.svg?height=256&width=256"
-          alt="Decoración floral"
-          width={256}
-          height={256}
-          className="w-full h-full object-cover"
-        />
-      </div>
-      <div className="absolute top-0 right-0 w-64 h-64 opacity-30">
-        <Image
-          src="/placeholder.svg?height=256&width=256"
-          alt="Decoración floral"
-          width={256}
-          height={256}
-          className="w-full h-full object-cover"
-        />
-      </div>
-      <div className="absolute bottom-0 left-0 w-64 h-64 opacity-30">
-        <Image
-          src="/placeholder.svg?height=256&width=256"
-          alt="Decoración floral"
-          width={256}
-          height={256}
-          className="w-full h-full object-cover"
-        />
-      </div>
-      <div className="absolute bottom-0 right-0 w-64 h-64 opacity-30">
-        <Image
-          src="/placeholder.svg?height=256&width=256"
-          alt="Decoración floral"
-          width={256}
-          height={256}
-          className="w-full h-full object-cover"
-        />
-      </div> */}
+     
 
       {/* Main content card */}
       <div
-        className={`relative z-10 max-w-2xl mx-auto transition-all duration-1000 ${
+        className={`relative bg-slate-200 bg-opacity-40 rounded-2xl p-2 text-black z-10 max-w-2xl mx-auto transition-all duration-1000 ${
           isVisible ? "" : ""
         }`}
       >
-        <div className=" p-12 text-center text-slate-400">
+        <div className=" p-12 text-center text-black">
           {/* Heart icon */}
           <div className="mb-8">
-            <Heart className="w-16 h-16 mx-auto text-slate-400" />
+            <Heart className="w-16 h-16 mx-auto text-black" />
           </div>
 
           {/* Decorative line */}
@@ -89,7 +53,7 @@ export default function WelcomeMessage({ onContinue }) {
           </div>
 
           {/* Main message */}
-          <div className="space-y-6 mb-8">
+          <div className="space-y-6 mb-8 font-bold">
             <p className="text-xl leading-relaxed">
               Después de vivir grandes experiencias juntos, decidimos ser más felices.
             </p>
