@@ -54,31 +54,87 @@ export const weddingData = {
   // ⏰ Timeline del evento
   timeline: [
     {
+      id: "bienvenida",
+      name: "Bienvenida",
+      time: "11:00",
+      icon: "🥳", // Fiesta - símbolo de celebración
+      color: "primary"
+    },
+    {
       id: "ceremonia",
       name: "Ceremonia",
-      time: "7:00",
+      time: "12:00",
       icon: "💍", // Anillo de compromiso - símbolo universal del matrimonio
+      color: "primary"
+    },
+    {
+      id: "musica",
+      name: "Música",
+      time: "14:00",
+      icon: "🎶", // Nota musical - símbolo de la música
+      color: "primary"
+    },
+    {
+      id:"fotos",
+      name: "Fotos y Regalos",
+      time: "14:30",
+      icon: "📸", // Cámara - símbolo de la fotografía
+      color: "primary"
+    },
+    {
+      id: "comida",
+      name: "Comida",
+      time: "15:00",
+      icon: "🍽️", // Plato con cubiertos - cena elegante
       color: "primary"
     },
     {
       id: "brindis",
       name: "Brindis",
-      time: "8:00",
+      time: "15:30",
       icon: "🥂", // Copas de champagne - celebración y brindis
       color: "secondary"
     },
     {
-      id: "cena",
-      name: "Cena",
-      time: "8:30",
-      icon: "🍽️", // Plato con cubiertos - cena elegante
+      id: "sorpresa1",
+      name: "Sorpresa 1",
+      time: "16:00",
+      icon: "🎉", // Confeti - símbolo de celebración
+      color: "secondary"
+    },
+    {
+      id: "baile1",
+      name: "Primer Baile",
+      time: "17:00",
+      icon: "💃", // Bailarina - símbolo de celebración y baile
+      color: "primary"
+    },
+    {
+      id: "sorpresa2",
+      name: "Sorpresa 2",
+      time: "18:00",
+      icon: "🎉", // Confeti - símbolo de celebración
+      color: "secondary"
+    },
+    {
+      id: "pastel",
+      name: "Pastel",
+      time: "19:00",
+      icon: "🎂", // Pastel - símbolo de celebración
+      color: "primary"
+    },
+    {
+      id: "baile2",
+      name: "Baile a Disfrutar",
+      time: "19:30",
+      icon: "💃", // Bailarina - símbolo de celebración y baile
       color: "primary"
     }
   ],
 
   // 👗 Código de vestimenta
   dressCode: {
-    type: "Formal",
+    type: "A Elegir",
     note: "Se reserva el color blanco para la novia",
     confirmationMessage: "¡Quiero compartir este momento tan esperado contigo! Por favor ayúdanos confirmando tu asistencia"
   },
