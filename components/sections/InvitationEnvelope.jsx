@@ -196,52 +196,47 @@ export default function EnvelopeOpening({ onOpen = () => {} }) {
               }}
             />
 
-            {/* Embossed couple silhouette container */}
+            {/* Embossed initials container */}
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
               <div 
                 className="relative pointer-events-none"
                 style={{
-                  filter: 'drop-shadow(1px 1px 2px rgba(0,0,0,0.3))',
+                  filter: 'drop-shadow(2px 2px 4px rgba(0,0,0,0.4))',
                   transform: 'rotate(5deg)'
                 }}
               >
-                {/* Couple silhouette SVG */}
-                <svg width="50" height="50" viewBox="0 0 100 100" className="opacity-80 pointer-events-none">
-                  {/* Female figure */}
-                  <ellipse cx="35" cy="25" rx="8" ry="10" fill="rgba(166, 124, 57, 0.6)" />
-                  <path 
-                    d="M 35 35 Q 30 40, 28 55 L 32 80 L 38 80 L 42 55 Q 40 40, 35 35"
-                    fill="rgba(166, 124, 57, 0.6)"
-                  />
-                  
-                  {/* Male figure */}
-                  <circle cx="65" cy="23" r="8" fill="rgba(166, 124, 57, 0.6)" />
-                  <path 
-                    d="M 65 31 Q 60 35, 58 55 L 62 80 L 68 80 L 72 55 Q 70 35, 65 31"
-                    fill="rgba(166, 124, 57, 0.6)"
-                  />
-                  
-                  {/* Heart between them */}
-                  <path 
-                    d="M 50 45 C 48 42, 44 42, 44 45 C 44 42, 40 42, 38 45 Q 38 50, 44 55 Q 50 50, 50 45 Z"
-                    fill="rgba(166, 124, 57, 0.4)"
-                    transform="translate(6, -5)"
-                  />
-                  
-                  {/* Holding hands line */}
-                  <line 
-                    x1="42" y1="50" 
-                    x2="58" y2="50" 
-                    stroke="rgba(166, 124, 57, 0.5)" 
-                    strokeWidth="2"
-                  />
-                </svg>
+                {/* Iniciales G & M */}
+                <div 
+                  className="flex justify-center items-center text-center font-serif font-bold pointer-events-none select-none"
+                  style={{
+                    fontSize: '28px',
+                    lineHeight: '1',
+                    color: 'rgba(166, 124, 57, 0.8)',
+                    textShadow: `
+                      1px 1px 2px rgba(0,0,0,0.3),
+                      inset 1px 1px 1px rgba(255,255,255,0.2)
+                    `,
+                    letterSpacing: '2px'
+                  }}
+                >
+                  <div style={{ marginBottom: '-2px' }}>G</div>
+                  <div 
+                    style={{ 
+                      fontSize: '16px', 
+                      color: 'rgba(166, 124, 57, 0.6)',
+                      margin: '-4px 0'
+                    }}
+                  >
+                    &
+                  </div>
+                  <div>M</div>
+                </div>
                 
                 {/* Embossed highlight effect */}
                 <div 
-                  className="absolute top-2 left-3 w-4 h-3 rounded-full opacity-40 pointer-events-none"
+                  className="absolute top-1 left-1/2 transform -translate-x-1/2 w-8 h-6 rounded-full opacity-30 pointer-events-none"
                   style={{
-                    background: 'radial-gradient(circle, rgba(255,255,255,0.4) 0%, transparent 70%)'
+                    background: 'radial-gradient(circle, rgba(255,255,255,0.5) 0%, transparent 70%)'
                   }}
                 />
               </div>

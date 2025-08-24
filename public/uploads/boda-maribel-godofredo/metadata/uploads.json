@@ -1,0 +1,31 @@
+[
+  {
+    "id": "upload_1756077982424_sb68oxlw7",
+    "timestamp": "2025-08-24T23:26:22.424Z",
+    "date": "2025-08-24",
+    "uploaderName": "Anónimo",
+    "eventMoment": "No especificado",
+    "comment": "",
+    "totalFiles": 1,
+    "totalSize": 486502,
+    "files": [
+      {
+        "id": "1756077982423_x1tghy7z2",
+        "originalName": "bandaColores1.jpg",
+        "fileName": "1756077982413_knebko9ub_bandacolores1.jpg",
+        "size": 486502,
+        "type": "image/jpeg",
+        "paths": {
+          "original": "/uploads/boda-maribel-godofredo/fotos/2025-08-24/original/1756077982413_knebko9ub_bandacolores1.jpg",
+          "compressed": "/uploads/boda-maribel-godofredo/fotos/2025-08-24/original/1756077982413_knebko9ub_bandacolores1.jpg",
+          "thumbnail": "/uploads/boda-maribel-godofredo/fotos/2025-08-24/original/1756077982413_knebko9ub_bandacolores1.jpg"
+        },
+        "uploadedAt": "2025-08-24T23:26:22.423Z",
+        "uploaderName": "Anónimo",
+        "eventMoment": "No especificado",
+        "comment": ""
+      }
+    ],
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
+  }
+]

@@ -1,0 +1,400 @@
+'use client'
+
+import React, { useState, useRef } from 'react';
+import Image from 'next/image';
+import { Camera, Upload, X, Image as ImageIcon, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
+import { VIP_COLORS, UI_CONFIG } from './constants/upload.constants';
+import { UploaderFormData } from './types/upload.types';
+import { useFileUpload } from './hooks/useFileUpload';
+
+/**
+ * Componente principal para subir fotos con diseño VIP mexicano
+ */
+const FotoUploader: React.FC = () => {
+  const [formData, setFormData] = useState<UploaderFormData>({});
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  
+  // Hook personalizado para manejar uploads
+  const { uploadState, addFiles, removeFile, uploadFiles, resetUpload } = useFileUpload();
+
+  // Handler para seleccionar archivos
+  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (files) {
+      addFiles(files);
+    }
+    // Limpiar el input para permitir seleccionar los mismos archivos de nuevo
+    if (event.target) {
+      event.target.value = '';
+    }
+  };
+
+  // Handler para abrir selector de archivos
+  const openFileSelector = () => {
+    fileInputRef.current?.click();
+  };
+
+  // Handler para subir archivos
+  const handleUpload = async () => {
+    await uploadFiles(formData);
+  };
+
+  // Handler para resetear todo
+  const handleReset = () => {
+    resetUpload();
+    setFormData({});
+  };
+
+  return (
+    <section 
+      className="py-16 px-4 relative overflow-hidden"
+      style={{
+        background: `linear-gradient(135deg, ${VIP_COLORS.marfil} 0%, ${VIP_COLORS.marfilSuave} 50%, ${VIP_COLORS.marfil} 100%)`,
+      }}
+    >
+      {/* Elementos decorativos VIP */}
+      <div className="absolute inset-0 opacity-5">
+        <div className="absolute top-10 left-10 w-32 h-32 rounded-full" style={{ backgroundColor: VIP_COLORS.verdeEsmeralda }}></div>
+        <div className="absolute bottom-10 right-10 w-24 h-24 rounded-full" style={{ backgroundColor: VIP_COLORS.rojoVino }}></div>
+        <div className="absolute top-1/2 left-1/4 w-16 h-16 rounded-full" style={{ backgroundColor: VIP_COLORS.dorado }}></div>
+      </div>
+
+      <div className="max-w-4xl mx-auto relative z-10">
+        {/* Header VIP */}
+        <div className="text-center mb-12">
+          <div 
+            className="inline-block text-white px-6 py-3 rounded-full text-sm font-semibold mb-6 shadow-xl border-2"
+            style={{ 
+              background: `linear-gradient(135deg, ${VIP_COLORS.verdeEsmeralda}, ${VIP_COLORS.rojoVino})`,
+              borderColor: `${VIP_COLORS.dorado}40`
+            }}
+          >
+            📸 Comparte tus Fotos
+          </div>
+          
+          <h2 
+            className="text-4xl md:text-5xl font-light mb-4"
+            style={{ color: VIP_COLORS.verdeEsmeralda }}
+          >
+            Galería Colaborativa
+          </h2>
+          
+          <p 
+            className="text-xl mb-2 font-medium"
+            style={{ color: VIP_COLORS.verdeBosque }}
+          >
+            Ayúdanos a crear una galería única de nuestra boda
+          </p>
+          
+          <p 
+            className="max-w-2xl mx-auto leading-relaxed"
+            style={{ color: `${VIP_COLORS.verdeEsmeralda}CC` }}
+          >
+            Sube tus fotos favoritas de la celebración. Serán parte de nuestro álbum digital especial.
+          </p>
+        </div>
+
+        {/* Input File Elegante */}
+        <div className="mb-8">
+          <input
+            ref={fileInputRef}
+            type="file"
+            multiple
+            accept=".jpg,.jpeg,.png,.webp"
+            onChange={handleFileSelect}
+            className="hidden"
+          />
+          
+          <div
+            onClick={openFileSelector}
+            className="relative cursor-pointer group transition-all duration-300 hover:scale-[1.02]"
+            style={{
+              background: `linear-gradient(135deg, ${VIP_COLORS.marfil} 0%, ${VIP_COLORS.marfilSuave} 100%)`,
+              border: `3px dashed ${VIP_COLORS.dorado}80`,
+              borderRadius: '20px',
+              minHeight: '200px'
+            }}
+          >
+            {/* Hover effect overlay */}
+            <div 
+              className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+              style={{
+                background: `linear-gradient(135deg, ${VIP_COLORS.verdeEsmeralda}10, ${VIP_COLORS.rojoVino}10)`
+              }}
+            />
+            
+            <div className="relative z-10 flex flex-col items-center justify-center py-12 px-6 text-center">
+              {/* Icono principal */}
+              <div 
+                className="w-20 h-20 rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg"
+                style={{
+                  background: `linear-gradient(135deg, ${VIP_COLORS.dorado}, ${VIP_COLORS.oroAntiguo})`
+                }}
+              >
+                <Camera 
+                  size={32} 
+                  style={{ color: VIP_COLORS.verdeOscuro }}
+                />
+              </div>
+              
+              {/* Texto principal */}
+              <h3 
+                className="text-2xl font-semibold mb-3"
+                style={{ color: VIP_COLORS.verdeEsmeralda }}
+              >
+                Selecciona tus fotos
+              </h3>
+              
+              <p 
+                className="text-lg mb-4"
+                style={{ color: VIP_COLORS.verdeBosque }}
+              >
+                Haz clic aquí para elegir las imágenes que quieres compartir
+              </p>
+              
+              {/* Especificaciones */}
+              <div 
+                className="text-sm opacity-75 space-y-1"
+                style={{ color: VIP_COLORS.verdeOscuro }}
+              >
+                <p>📁 Formatos: JPG, PNG, WEBP</p>
+                <p>📏 Tamaño máximo: 10MB por foto</p>
+                <p>🖼️ Hasta 10 fotos a la vez</p>
+              </div>
+              
+              {/* Botón estilizado */}
+              <div 
+                className="mt-6 px-8 py-3 rounded-full font-medium text-white shadow-lg group-hover:shadow-xl transition-all duration-300"
+                style={{
+                  background: `linear-gradient(135deg, ${VIP_COLORS.verdeEsmeralda}, ${VIP_COLORS.verdeBosque})`
+                }}
+              >
+                <Upload size={18} className="inline mr-2" />
+                Seleccionar Fotos
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Preview Grid - Solo mostrar si hay archivos */}
+        {uploadState.files.length > 0 && (
+          <div 
+            className="p-6 rounded-2xl border-2 shadow-lg mb-8"
+            style={{
+              background: `linear-gradient(135deg, ${VIP_COLORS.marfilSuave} 0%, ${VIP_COLORS.marfil} 100%)`,
+              borderColor: `${VIP_COLORS.dorado}60`
+            }}
+          >
+            <h3 
+              className="text-xl font-semibold mb-4 flex items-center"
+              style={{ color: VIP_COLORS.verdeEsmeralda }}
+            >
+              <ImageIcon size={20} className="mr-2" />
+              Fotos Seleccionadas ({uploadState.files.length})
+            </h3>
+            
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {uploadState.files.map((uploadFile, index) => (
+                <div 
+                  key={uploadFile.id}
+                  className="relative group rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300"
+                  style={{ height: `${UI_CONFIG.previewSize}px` }}
+                >
+                  {/* Preview de la imagen */}
+                  <Image
+                    src={uploadFile.preview}
+                    alt={`Preview ${index + 1}`}
+                    fill
+                    sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
+                    className="object-cover"
+                  />
+                  
+                  {/* Status overlay */}
+                  {uploadFile.status === 'uploading' && (
+                    <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                      <div className="text-white text-center">
+                        <Loader2 size={24} className="animate-spin mx-auto mb-2" />
+                        <div className="text-sm">{uploadFile.progress}%</div>
+                      </div>
+                    </div>
+                  )}
+                  
+                  {uploadFile.status === 'completed' && (
+                    <div className="absolute top-2 left-2">
+                      <CheckCircle size={20} style={{ color: VIP_COLORS.verdeEsmeralda }} />
+                    </div>
+                  )}
+                  
+                  {uploadFile.status === 'error' && (
+                    <div className="absolute inset-0 bg-red-500/20 flex items-center justify-center">
+                      <AlertCircle size={24} style={{ color: VIP_COLORS.rojoVino }} />
+                    </div>
+                  )}
+                  
+                  {/* Overlay con información */}
+                  <div 
+                    className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                  />
+                  
+                  {/* Botón eliminar */}
+                  {uploadFile.status === 'pending' && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        removeFile(uploadFile.id);
+                      }}
+                      className="absolute top-2 right-2 w-6 h-6 rounded-full flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-all duration-300 hover:scale-110"
+                      style={{ backgroundColor: VIP_COLORS.rojoVino }}
+                    >
+                      <X size={14} />
+                    </button>
+                  )}
+                  
+                  {/* Nombre del archivo */}
+                  <div className="absolute bottom-2 left-2 right-8 text-white text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-300 truncate">
+                    {uploadFile.file.name}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Mostrar errores si los hay */}
+        {uploadState.error && (
+          <div 
+            className="p-4 rounded-lg border-l-4 mb-6"
+            style={{
+              backgroundColor: `${VIP_COLORS.rojoVino}10`,
+              borderColor: VIP_COLORS.rojoVino
+            }}
+          >
+            <div className="flex items-center">
+              <AlertCircle size={20} style={{ color: VIP_COLORS.rojoVino }} className="mr-2" />
+              <p style={{ color: VIP_COLORS.rojoVino }}>{uploadState.error}</p>
+            </div>
+          </div>
+        )}
+
+        {/* Mensaje de éxito */}
+        {uploadState.success && (
+          <div 
+            className="p-4 rounded-lg border-l-4 mb-6"
+            style={{
+              backgroundColor: `${VIP_COLORS.verdeEsmeralda}10`,
+              borderColor: VIP_COLORS.verdeEsmeralda
+            }}
+          >
+            <div className="flex items-center">
+              <CheckCircle size={20} style={{ color: VIP_COLORS.verdeEsmeralda }} className="mr-2" />
+              <p style={{ color: VIP_COLORS.verdeEsmeralda }}>¡Fotos subidas exitosamente!</p>
+            </div>
+          </div>
+        )}
+
+        {/* Formulario opcional - Mostrar solo si hay archivos */}
+        {uploadState.files.length > 0 && !uploadState.success && (
+          <div 
+            className="p-6 rounded-2xl border-2 shadow-lg"
+            style={{
+              background: `linear-gradient(135deg, ${VIP_COLORS.marfil} 0%, ${VIP_COLORS.marfilSuave} 100%)`,
+              borderColor: `${VIP_COLORS.dorado}60`
+            }}
+          >
+            <h3 
+              className="text-xl font-semibold mb-4"
+              style={{ color: VIP_COLORS.verdeEsmeralda }}
+            >
+              Información Adicional (Opcional)
+            </h3>
+            
+            <div className="grid md:grid-cols-2 gap-6">
+              {/* Campo nombre */}
+              <div>
+                <label 
+                  className="block text-sm font-medium mb-2"
+                  style={{ color: VIP_COLORS.verdeBosque }}
+                >
+                  Tu nombre
+                </label>
+                <input
+                  type="text"
+                  placeholder="Nombre (opcional)"
+                  value={formData.uploaderName || ''}
+                  onChange={(e) => setFormData(prev => ({ ...prev, uploaderName: e.target.value }))}
+                  className="w-full px-4 py-3 rounded-lg border-2 transition-colors duration-200 focus:outline-none"
+                  style={{
+                    borderColor: `${VIP_COLORS.dorado}60`,
+                    backgroundColor: VIP_COLORS.marfilSuave
+                  }}
+                />
+              </div>
+              
+              {/* Campo comentario */}
+              <div>
+                <label 
+                  className="block text-sm font-medium mb-2"
+                  style={{ color: VIP_COLORS.verdeBosque }}
+                >
+                  Comentario
+                </label>
+                <textarea
+                  placeholder="Comparte un mensaje especial (opcional)"
+                  value={formData.comment || ''}
+                  onChange={(e) => setFormData(prev => ({ ...prev, comment: e.target.value }))}
+                  rows={3}
+                  className="w-full px-4 py-3 rounded-lg border-2 transition-colors duration-200 focus:outline-none resize-none"
+                  style={{
+                    borderColor: `${VIP_COLORS.dorado}60`,
+                    backgroundColor: VIP_COLORS.marfilSuave
+                  }}
+                />
+              </div>
+            </div>
+            
+            {/* Botón de upload */}
+            <div className="mt-6 text-center space-y-4">
+              <button
+                onClick={handleUpload}
+                disabled={uploadState.uploading || uploadState.files.length === 0}
+                className="px-8 py-4 rounded-full font-semibold text-white shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                style={{
+                  background: `linear-gradient(135deg, ${VIP_COLORS.verdeEsmeralda}, ${VIP_COLORS.rojoVino})`
+                }}
+              >
+                {uploadState.uploading ? (
+                  <>
+                    <Loader2 size={20} className="inline mr-2 animate-spin" />
+                    Subiendo... {uploadState.progress}%
+                  </>
+                ) : (
+                  <>
+                    <Upload size={20} className="inline mr-2" />
+                    Subir {uploadState.files.length} foto{uploadState.files.length !== 1 ? 's' : ''}
+                  </>
+                )}
+              </button>
+              
+              {/* Botón de reset */}
+              {(uploadState.files.length > 0 || uploadState.success) && (
+                <button
+                  onClick={handleReset}
+                  className="ml-4 px-6 py-3 rounded-full font-medium border-2 transition-all duration-300 hover:scale-105"
+                  style={{
+                    borderColor: VIP_COLORS.dorado,
+                    color: VIP_COLORS.verdeEsmeralda,
+                    backgroundColor: 'transparent'
+                  }}
+                >
+                  {uploadState.success ? 'Subir más fotos' : 'Limpiar todo'}
+                </button>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+    </section>
+  );
+};
+
+export default FotoUploader;
