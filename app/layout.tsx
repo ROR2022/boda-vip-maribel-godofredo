@@ -28,7 +28,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es" className={`${playfair.variable} ${openSans.variable}`}>
-      <body className="font-body antialiased">{children}</body>
+      <body 
+        className="font-body antialiased"
+        suppressHydrationWarning={true}
+      >
+        {children}
+      </body>
     </html>
   )
 }

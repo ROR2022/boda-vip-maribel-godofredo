@@ -1,4 +1,5 @@
-import React from "react";
+"use client";
+import React, {useState, useEffect} from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { QrCode, Camera, Users, Sparkles } from "lucide-react";
@@ -22,6 +23,30 @@ const VIP_COLORS = {
  * que los usuarios pueden escanear para acceder a la galería colaborativa.
  */
 const QRpromo = () => {
+  const [isCelular, setIsCelular] = useState(false);
+  const [viewportWidth, setViewportWidth] = useState(window.innerWidth);
+
+  const classNames = "flex font-script justify-center items-center text-5xl md:text-6xl font-light mb-6 leading-tight";
+
+  useEffect(() => {
+    const handleResize = () => {
+      setViewportWidth(window.innerWidth);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (viewportWidth < 768) {
+      setIsCelular(true);
+    } else {
+      setIsCelular(false);
+    }
+  }, [viewportWidth]);
+
   return (
     <section
       className="py-16 px-4 relative overflow-hidden bg-mexican"
@@ -31,8 +56,14 @@ const QRpromo = () => {
         }
       }
     >
+      <Image
+        src="/images/marco2b.png"
+        fill
+        style={{ objectFit: 'cover' }}
+        alt="Fondo decorativo"
+      />
       {/* Elementos decorativos VIP */}
-      <div className="absolute inset-0 opacity-5">
+      {/* <div className="absolute inset-0 opacity-5">
         <div
           className="absolute top-10 left-10 w-32 h-32 rounded-full"
           style={{ backgroundColor: VIP_COLORS.verdeEsmeralda }}
@@ -45,11 +76,11 @@ const QRpromo = () => {
           className="absolute top-1/2 left-1/4 w-16 h-16 rounded-full"
           style={{ backgroundColor: VIP_COLORS.dorado }}
         ></div>
-      </div>
+      </div> */}
 
       <div className="max-w-4xl mx-auto relative z-10">
         {/* Header Badge */}
-        <div className="text-center mb-8">
+        <div style={{ display: "none" }} className="text-center mb-8">
           <div
             className="inline-block text-white px-6 py-3 rounded-full text-sm font-semibold mb-6 shadow-xl border-2"
             style={{
@@ -63,44 +94,60 @@ const QRpromo = () => {
         </div>
 
         {/* Contenido Principal */}
-        <div className="flex flex-col lg:flex-row items-center justify-center gap-12">
+        <div
+          style={{
+            fontFamily: "cursive",
+          }}
+          className="flex flex-col items-center justify-center gap-12 bg-slate-100 rounded-2xl p-2"
+        >
           {/* Sección de Texto */}
           <div className="flex-1 text-center lg:text-left">
             {/* Título Superior */}
             <div className="mb-4">
               <p
-                className="text-lg font-medium tracking-wide uppercase"
-                style={{ color: VIP_COLORS.verdeBosque }}
+                className="flex justify-center text-2xl font-medium tracking-wide uppercase"
+                style={{
+                  width: "300px",
+                  marginLeft: "auto",
+                  marginRight: "auto",
+                  fontFamily: "cursive"
+                  //border: `3px solid ${VIP_COLORS.dorado}80`,
+                }}
               >
-                Nuestra Boda 
+                Nuestra Boda
               </p>
             </div>
 
             {/* Nombres de los Novios */}
             <h1
-              className="text-5xl md:text-6xl font-light mb-6 leading-tight"
+              className={isCelular ? `${classNames} flex-col` : classNames}
               style={{
                 color: VIP_COLORS.verdeEsmeralda,
                 textShadow: "0 2px 4px rgba(0,0,0,0.1)",
               }}
             >
               Godofredo
+              <span style={{ color: VIP_COLORS.dorado }}>&</span>
               <span
-                className="block text-4xl md:text-5xl font-normal"
+                className=" text-4xl md:text-5xl font-normal"
                 style={{ color: VIP_COLORS.rojoVino }}
               >
-                & Maribel
+                Maribel
               </span>
             </h1>
 
-          <h2 className="text-3xl font-semibold mb-4" style={{ color: VIP_COLORS.verdeOscuro }}>
-            Sábado 29 de Noviembre 2025
-          </h2>
+            <h2
+              className="flex justify-center items-center text-2xl font-semibold mb-4"
+              style={{ color: VIP_COLORS.verdeOscuro }}
+            >
+              Sábado 29 de Noviembre 2025
+            </h2>
 
             {/* Descripción */}
             <div
               className="p-6 rounded-2xl border-2 mb-6"
               style={{
+                display: "none",
                 background: `linear-gradient(135deg, ${VIP_COLORS.marfilSuave} 0%, ${VIP_COLORS.marfil} 100%)`,
                 borderColor: `${VIP_COLORS.dorado}60`,
               }}
@@ -151,7 +198,7 @@ const QRpromo = () => {
 
             {/* Call to Action */}
             <div
-              className="inline-block px-8 py-4 rounded-xl text-white font-semibold text-lg shadow-lg transform hover:scale-105 transition-all duration-300"
+              className="flex items-center justify-center px-8 py-4 rounded-xl text-white font-semibold text-lg shadow-lg transform hover:scale-105 transition-all duration-300"
               style={{
                 background: `linear-gradient(135deg, ${VIP_COLORS.verdeEsmeralda}, ${VIP_COLORS.verdeBosque})`,
               }}
@@ -161,7 +208,7 @@ const QRpromo = () => {
           </div>
 
           {/* Sección del QR */}
-          <div className="flex-shrink-0">
+          <div className="">
             <div
               className="p-8 rounded-3xl shadow-2xl transform hover:scale-105 transition-all duration-300"
               style={{
@@ -208,15 +255,24 @@ const QRpromo = () => {
           </div>
         </div>
 
-<Link href="/gallery">
-        <div className="mt-8 flex justify-center border-2 rounded-2xl border-cyan-600 bg-slate-300 py-2">
-          
-            <span className="text-sm font-semibold" style={{ color: VIP_COLORS.verdeOscuro }}>
+        <Link href="/gallery">
+          <div
+            style={{
+              display:'flex',
+              maxWidth: "300px",
+              marginLeft: "auto",
+              marginRight: "auto",
+            }}
+            className="mt-8 flex justify-center border-2 rounded-2xl border-cyan-600 bg-slate-300 py-2"
+          >
+            <span
+              className="text-sm font-semibold"
+              style={{ color: VIP_COLORS.verdeOscuro }}
+            >
               Ir a la Galería Colaborativa
             </span>
-          
-        </div>
-</Link>
+          </div>
+        </Link>
         {/* Instrucciones adicionales */}
         <div style={{ display: "none" }} className="text-center mt-12">
           <div
