@@ -2,9 +2,10 @@
 
 import React, { useState } from 'react';
 import Image from 'next/image';
-import { Camera, Users, Calendar, RefreshCw, Filter, ChevronLeft, ChevronRight, Loader2, AlertCircle, Heart, Cloud, Server, Trash2, X } from 'lucide-react';
+import { Camera, Users, Calendar, RefreshCw, Filter, ChevronLeft, ChevronRight, Loader2, AlertCircle, Heart, Cloud, Server, Trash2, X, Image as ImageIcon, ArrowUp } from 'lucide-react';
 import { useHybridGallery } from './hooks/useHybridGallery';
 import DeleteConfirmationModal from './DeleteConfirmationModal';
+import Link from 'next/link';
 
 // Tipos importados del hook híbrido - usar la misma interfaz
 interface HybridPhoto {
@@ -219,6 +220,21 @@ const DinamicGallery: React.FC = () => {
             <RefreshCw size={18} className={`mr-2 ${loading ? 'animate-spin' : ''}`} />
             Actualizar
           </button>
+
+          <Link
+            href="/fotos"
+            className="flex items-center px-4 py-2 border-2 rounded-lg transition-all duration-300 hover:scale-105"
+          >
+            <Camera size={18} className="mr-2" />
+            Subir Foto
+          </Link>
+          <Link
+            href="/"
+            className="flex items-center px-4 py-2 border-2 rounded-lg transition-all duration-300 hover:scale-105"
+          >
+            <ImageIcon size={18} className="mr-2" />
+            Ver Invitación
+          </Link>
 
           {/* Toggle Filtros */}
           <button
@@ -442,6 +458,22 @@ const DinamicGallery: React.FC = () => {
             ))}
           </div>
         )}
+
+        {/** Regresar al hasta arriba */}
+        <div className="flex justify-center mb-4">
+          <Link
+            href="#top"
+            className="inline-flex items-center px-4 py-2 rounded-lg border-2 transition-all duration-300 hover:scale-105"
+            style={{
+              borderColor: VIP_COLORS.dorado,
+              color: VIP_COLORS.verdeEsmeralda,
+              backgroundColor: 'transparent'
+            }}
+          >
+            <ArrowUp size={18} className="mr-1" />
+            Volver Arriba
+          </Link>
+        </div>
 
         {/* Paginación - Temporalmente deshabilitada */}
         {pagination && pagination.pages > 1 && false && (
