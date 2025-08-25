@@ -549,12 +549,39 @@ const DinamicGallery: React.FC = () => {
                   )}
                 </div>
                 
+                {/* 🗑️ Botón de Eliminar Foto */}
+                <button
+                  onClick={() => {
+                    handleDeleteClick(selectedPhoto, { stopPropagation: () => {} } as React.MouseEvent);
+                    setSelectedPhoto(null); // Cerrar modal de vista
+                  }}
+                  disabled={isPhotoDeleting(selectedPhoto.id)}
+                  className="mt-6 w-full px-4 py-2 rounded-lg transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+                  style={{
+                    background: `linear-gradient(135deg, ${VIP_COLORS.rojoVino}, ${VIP_COLORS.rojoCardenal})`,
+                    color: 'white'
+                  }}
+                >
+                  {isPhotoDeleting(selectedPhoto.id) ? (
+                    <>
+                      <Loader2 size={16} className="animate-spin" />
+                      <span>Eliminando...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Trash2 size={16} />
+                      <span>Eliminar Foto</span>
+                    </>
+                  )}
+                </button>
+
                 <button
                   onClick={() => setSelectedPhoto(null)}
-                  className="mt-6 w-full px-4 py-2 rounded-lg transition-all duration-300 hover:scale-105"
+                  className="mt-3 w-full px-4 py-2 rounded-lg border-2 transition-all duration-300 hover:scale-105"
                   style={{
-                    background: `linear-gradient(135deg, ${VIP_COLORS.verdeEsmeralda}, ${VIP_COLORS.verdeBosque})`,
-                    color: 'white'
+                    borderColor: VIP_COLORS.dorado,
+                    color: VIP_COLORS.verdeEsmeralda,
+                    backgroundColor: 'transparent'
                   }}
                 >
                   Cerrar
