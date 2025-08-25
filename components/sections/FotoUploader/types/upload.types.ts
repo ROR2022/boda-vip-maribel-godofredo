@@ -7,6 +7,7 @@ export interface UploadFile {
   status: 'pending' | 'uploading' | 'success' | 'error' | 'completed';
   progress: number;
   error?: string;
+  cloudinaryId?: string; // ID de Cloudinary para archivos subidos a la nube
 }
 
 export interface UploadState {

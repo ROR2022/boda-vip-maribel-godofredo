@@ -2,8 +2,27 @@
 
 import React, { useState } from 'react';
 import Image from 'next/image';
-import { Camera, Users, Calendar, RefreshCw, Filter, ChevronLeft, ChevronRight, Loader2, AlertCircle, Heart } from 'lucide-react';
-import { useDinamicGallery, DinamicPhoto } from './hooks/useDinamicGallery';
+import { Camera, Users, Calendar, RefreshCw, Filter, ChevronLeft, ChevronRight, Loader2, AlertCircle, Heart, Cloud, Server } from 'lucide-react';
+import { useHybridGallery } from './hooks/useHybridGallery';
+
+// Tipos importados del hook híbrido
+interface HybridPhoto {
+  id: string;
+  originalName: string;
+  uploaderName: string;
+  uploadedAt: string;
+  size: number;
+  eventMoment: string;
+  comment?: string;
+  paths?: {
+    original: string;
+    compressed?: string;
+    thumbnail?: string;
+  };
+  cloudinaryId?: string;
+  cloudinaryUrl?: string;
+  source: 'original' | 'cloudinary';
+}
 
 // Paleta VIP Mexicana (importada desde constants)
 const VIP_COLORS = {
@@ -30,11 +49,11 @@ const DinamicGallery: React.FC = () => {
     pagination, 
     filters, 
     setFilters, 
-    setPage, 
-    refresh 
-  } = useDinamicGallery();
+    refresh,
+    getPhotoDisplayUrl
+  } = useHybridGallery();
 
-  const [selectedPhoto, setSelectedPhoto] = useState<DinamicPhoto | null>(null);
+  const [selectedPhoto, setSelectedPhoto] = useState<HybridPhoto | null>(null);
   const [showFilters, setShowFilters] = useState(false);
 
   // Función para formatear fecha
@@ -133,6 +152,10 @@ const DinamicGallery: React.FC = () => {
               style={{ color: VIP_COLORS.verdeBosque }}
             >
               {stats.totalPhotos} foto{stats.totalPhotos !== 1 ? 's' : ''} compartida{stats.totalPhotos !== 1 ? 's' : ''} por {stats.uploaders.length} invitado{stats.uploaders.length !== 1 ? 's' : ''}
+              <br />
+              <span className="text-sm opacity-75">
+                📁 {stats.sourceBreakdown.original} locales • ☁️ {stats.sourceBreakdown.cloudinary} en la nube
+              </span>
             </p>
           )}
         </div>
@@ -177,7 +200,7 @@ const DinamicGallery: React.FC = () => {
               borderColor: `${VIP_COLORS.dorado}60`
             }}
           >
-            <div className="grid md:grid-cols-2 gap-6">
+            <div className="grid md:grid-cols-3 gap-6">
               {/* Filtro por Momento */}
               <div>
                 <label 
@@ -197,7 +220,7 @@ const DinamicGallery: React.FC = () => {
                   }}
                 >
                   <option value="all">Todos los momentos</option>
-                  {stats.eventMoments.map(moment => (
+                  {stats.eventMoments.map((moment: string) => (
                     <option key={moment} value={moment}>{moment}</option>
                   ))}
                 </select>
@@ -222,9 +245,33 @@ const DinamicGallery: React.FC = () => {
                   }}
                 >
                   <option value="all">Todos los invitados</option>
-                  {stats.uploaders.map(uploader => (
+                  {stats.uploaders.map((uploader: string) => (
                     <option key={uploader} value={uploader}>{uploader}</option>
                   ))}
+                </select>
+              </div>
+
+              {/* Filtro por Fuente */}
+              <div>
+                <label 
+                  className="block text-sm font-semibold mb-2"
+                  style={{ color: VIP_COLORS.verdeEsmeralda }}
+                >
+                  <Server size={16} className="inline mr-2" />
+                  Fuente de Almacenamiento
+                </label>
+                <select
+                  value={filters.source}
+                  onChange={(e) => setFilters({ source: e.target.value as 'all' | 'original' | 'cloudinary' })}
+                  className="w-full px-4 py-3 rounded-lg border-2 transition-colors duration-200 focus:outline-none"
+                  style={{
+                    borderColor: `${VIP_COLORS.dorado}60`,
+                    backgroundColor: VIP_COLORS.marfilSuave
+                  }}
+                >
+                  <option value="all">Todas las fuentes</option>
+                  <option value="original">📁 Servidor Local ({stats.sourceBreakdown.original})</option>
+                  <option value="cloudinary">☁️ Cloudinary ({stats.sourceBreakdown.cloudinary})</option>
                 </select>
               </div>
             </div>
@@ -258,22 +305,31 @@ const DinamicGallery: React.FC = () => {
         {/* Grid de Fotos */}
         {!loading && photos.length > 0 && (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-8">
-            {photos.map((photo) => (
+            {photos.map((photo: HybridPhoto) => (
               <div 
                 key={photo.id}
                 className="group relative rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer transform hover:scale-105"
                 onClick={() => setSelectedPhoto(photo)}
                 style={{ aspectRatio: '1' }}
               >
-                {/* Imagen */}
+                {/* Imagen usando URL híbrida */}
                 <Image
-                  src={photo.paths.compressed || photo.paths.original}
+                  src={getPhotoDisplayUrl(photo, 'compressed')}
                   alt={photo.originalName}
                   fill
                   sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
                   className="object-cover"
                   loading="lazy"
                 />
+                
+                {/* Indicador de fuente */}
+                <div className="absolute top-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  {photo.source === 'cloudinary' ? (
+                    <Cloud size={16} className="text-blue-500 bg-white rounded-full p-1" />
+                  ) : (
+                    <Server size={16} className="text-green-500 bg-white rounded-full p-1" />
+                  )}
+                </div>
                 
                 {/* Overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -294,12 +350,11 @@ const DinamicGallery: React.FC = () => {
           </div>
         )}
 
-        {/* Paginación */}
-        {pagination && pagination.pages > 1 && (
+        {/* Paginación - Temporalmente deshabilitada */}
+        {pagination && pagination.pages > 1 && false && (
           <div className="flex items-center justify-center space-x-4">
             <button
-              onClick={() => setPage(pagination.page - 1)}
-              disabled={!pagination.hasPrev}
+              disabled={true}
               className="flex items-center px-4 py-2 rounded-lg border-2 transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
               style={{
                 borderColor: VIP_COLORS.dorado,
@@ -318,12 +373,11 @@ const DinamicGallery: React.FC = () => {
                 color: 'white'
               }}
             >
-              {pagination.page} de {pagination.pages}
+              {pagination?.page || 1} de {pagination?.pages || 1}
             </span>
 
             <button
-              onClick={() => setPage(pagination.page + 1)}
-              disabled={!pagination.hasNext}
+              disabled={true}
               className="flex items-center px-4 py-2 rounded-lg border-2 transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
               style={{
                 borderColor: VIP_COLORS.dorado,
@@ -349,10 +403,10 @@ const DinamicGallery: React.FC = () => {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex flex-col md:flex-row">
-              {/* Imagen */}
+              {/* Imagen usando URL híbrida */}
               <div className="flex-1 p-4 relative">
                 <Image
-                  src={selectedPhoto.paths.compressed || selectedPhoto.paths.original}
+                  src={getPhotoDisplayUrl(selectedPhoto, 'original')}
                   alt={selectedPhoto.originalName}
                   width={800}
                   height={600}

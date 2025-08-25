@@ -4,7 +4,7 @@ import FotoUploader from '@/components/sections/FotoUploader/FotoUploader'
 const page = () => {
   return (
     <div>
-      <h1>Galería de Fotos</h1>
+      
       <FotoUploader />
     </div>
   )

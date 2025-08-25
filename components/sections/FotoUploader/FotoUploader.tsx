@@ -2,26 +2,34 @@
 
 import React, { useState, useRef } from 'react';
 import Image from 'next/image';
-import { Camera, Upload, X, Image as ImageIcon, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
+import { Camera, Upload, X, Image as ImageIcon, CheckCircle, AlertCircle, Loader2, Cloud, Server, RefreshCw } from 'lucide-react';
 import { VIP_COLORS, UI_CONFIG } from './constants/upload.constants';
-import { UploaderFormData } from './types/upload.types';
-import { useFileUpload } from './hooks/useFileUpload';
+import { UploaderFormData, UploadFile } from './types/upload.types';
+import { useHybridUpload } from './hooks/useHybridUpload';
 
 /**
  * Componente principal para subir fotos con diseño VIP mexicano
  */
 const FotoUploader: React.FC = () => {
   const [formData, setFormData] = useState<UploaderFormData>({});
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
   
-  // Hook personalizado para manejar uploads
-  const { uploadState, addFiles, removeFile, uploadFiles, resetUpload } = useFileUpload();
+  // Hook híbrido para manejar uploads (Original + Cloudinary)
+  const { 
+    uploadState, 
+    systemType,
+    uploadFiles, 
+    resetUpload,
+    switchToOriginal,
+    switchToCloudinary
+  } = useHybridUpload();
 
   // Handler para seleccionar archivos
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     if (files) {
-      addFiles(files);
+      setSelectedFiles(Array.from(files));
     }
     // Limpiar el input para permitir seleccionar los mismos archivos de nuevo
     if (event.target) {
@@ -36,11 +44,19 @@ const FotoUploader: React.FC = () => {
 
   // Handler para subir archivos
   const handleUpload = async () => {
-    await uploadFiles(formData);
+    if (selectedFiles.length > 0) {
+      await uploadFiles(selectedFiles, formData);
+    }
+  };
+
+  // Handler para remover archivo
+  const removeFile = (index: number) => {
+    setSelectedFiles(prev => prev.filter((_, i) => i !== index));
   };
 
   // Handler para resetear todo
   const handleReset = () => {
+    setSelectedFiles([]);
     resetUpload();
     setFormData({});
   };
@@ -62,6 +78,40 @@ const FotoUploader: React.FC = () => {
       <div className="max-w-4xl mx-auto relative z-10">
         {/* Header VIP */}
         <div className="text-center mb-12">
+          {/* Indicador de sistema de almacenamiento */}
+          <div className="flex justify-center items-center gap-2 mb-4">
+            <div 
+              className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium border-2 transition-all duration-300 ${
+                systemType === 'cloudinary'
+                  ? 'bg-blue-50 text-blue-700 border-blue-200' 
+                  : 'bg-green-50 text-green-700 border-green-200'
+              }`}
+            >
+              {systemType === 'cloudinary' ? (
+                <>
+                  <Cloud size={16} />
+                  Almacenamiento en la Nube
+                </>
+              ) : (
+                <>
+                  <Server size={16} />
+                  Servidor Local
+                </>
+              )}
+            </div>
+            
+            {/* Botón para cambiar sistema (solo en desarrollo) */}
+            {process.env.NODE_ENV === 'development' && (
+              <button
+                onClick={systemType === 'cloudinary' ? switchToOriginal : switchToCloudinary}
+                className="p-2 rounded-full hover:bg-gray-100 transition-colors duration-200"
+                title={`Cambiar a ${systemType === 'cloudinary' ? 'servidor local' : 'nube'}`}
+              >
+                <RefreshCw size={16} style={{ color: VIP_COLORS.verdeEsmeralda }} />
+              </button>
+            )}
+          </div>
+
           <div 
             className="inline-block text-white px-6 py-3 rounded-full text-sm font-semibold mb-6 shadow-xl border-2"
             style={{ 
@@ -152,7 +202,7 @@ const FotoUploader: React.FC = () => {
                 Haz clic aquí para elegir las imágenes que quieres compartir
               </p>
               
-              {/* Especificaciones */}
+              {/* Especificaciones actualizadas */}
               <div 
                 className="text-sm opacity-75 space-y-1"
                 style={{ color: VIP_COLORS.verdeOscuro }}
@@ -160,6 +210,9 @@ const FotoUploader: React.FC = () => {
                 <p>📁 Formatos: JPG, PNG, WEBP</p>
                 <p>📏 Tamaño máximo: 10MB por foto</p>
                 <p>🖼️ Hasta 10 fotos a la vez</p>
+                {systemType === 'cloudinary' && (
+                  <p className="text-blue-600">☁️ Optimización automática en la nube</p>
+                )}
               </div>
               
               {/* Botón estilizado */}
@@ -177,7 +230,7 @@ const FotoUploader: React.FC = () => {
         </div>
 
         {/* Preview Grid - Solo mostrar si hay archivos */}
-        {uploadState.files.length > 0 && (
+        {selectedFiles.length > 0 && (
           <div 
             className="p-6 rounded-2xl border-2 shadow-lg mb-8"
             style={{
@@ -190,42 +243,45 @@ const FotoUploader: React.FC = () => {
               style={{ color: VIP_COLORS.verdeEsmeralda }}
             >
               <ImageIcon size={20} className="mr-2" />
-              Fotos Seleccionadas ({uploadState.files.length})
+              Fotos Seleccionadas ({selectedFiles.length})
             </h3>
             
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {uploadState.files.map((uploadFile, index) => (
+              {selectedFiles.map((file: File, index: number) => (
                 <div 
-                  key={uploadFile.id}
+                  key={`${file.name}-${index}`}
                   className="relative group rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300"
                   style={{ height: `${UI_CONFIG.previewSize}px` }}
                 >
                   {/* Preview de la imagen */}
                   <Image
-                    src={uploadFile.preview}
+                    src={URL.createObjectURL(file)}
                     alt={`Preview ${index + 1}`}
                     fill
                     sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
                     className="object-cover"
                   />
                   
-                  {/* Status overlay */}
-                  {uploadFile.status === 'uploading' && (
+                  {/* Status overlay durante upload */}
+                  {uploadState.uploading && (
                     <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
                       <div className="text-white text-center">
                         <Loader2 size={24} className="animate-spin mx-auto mb-2" />
-                        <div className="text-sm">{uploadFile.progress}%</div>
+                        <div className="text-sm">{uploadState.progress}%</div>
                       </div>
                     </div>
                   )}
                   
-                  {uploadFile.status === 'completed' && (
-                    <div className="absolute top-2 left-2">
+                  {uploadState.success && (
+                    <div className="absolute top-2 left-2 flex items-center gap-1">
                       <CheckCircle size={20} style={{ color: VIP_COLORS.verdeEsmeralda }} />
+                      {systemType === 'cloudinary' && (
+                        <Cloud size={16} className="text-blue-500" />
+                      )}
                     </div>
                   )}
                   
-                  {uploadFile.status === 'error' && (
+                  {uploadState.error && (
                     <div className="absolute inset-0 bg-red-500/20 flex items-center justify-center">
                       <AlertCircle size={24} style={{ color: VIP_COLORS.rojoVino }} />
                     </div>
@@ -237,11 +293,11 @@ const FotoUploader: React.FC = () => {
                   />
                   
                   {/* Botón eliminar */}
-                  {uploadFile.status === 'pending' && (
+                  {!uploadState.uploading && (
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        removeFile(uploadFile.id);
+                        removeFile(index);
                       }}
                       className="absolute top-2 right-2 w-6 h-6 rounded-full flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-all duration-300 hover:scale-110"
                       style={{ backgroundColor: VIP_COLORS.rojoVino }}
@@ -252,7 +308,7 @@ const FotoUploader: React.FC = () => {
                   
                   {/* Nombre del archivo */}
                   <div className="absolute bottom-2 left-2 right-8 text-white text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-300 truncate">
-                    {uploadFile.file.name}
+                    {file.name}
                   </div>
                 </div>
               ))}
@@ -293,7 +349,7 @@ const FotoUploader: React.FC = () => {
         )}
 
         {/* Formulario opcional - Mostrar solo si hay archivos */}
-        {uploadState.files.length > 0 && !uploadState.success && (
+        {selectedFiles.length > 0 && !uploadState.success && (
           <div 
             className="p-6 rounded-2xl border-2 shadow-lg"
             style={{
@@ -356,7 +412,7 @@ const FotoUploader: React.FC = () => {
             <div className="mt-6 text-center space-y-4">
               <button
                 onClick={handleUpload}
-                disabled={uploadState.uploading || uploadState.files.length === 0}
+                disabled={uploadState.uploading || selectedFiles.length === 0}
                 className="px-8 py-4 rounded-full font-semibold text-white shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
                 style={{
                   background: `linear-gradient(135deg, ${VIP_COLORS.verdeEsmeralda}, ${VIP_COLORS.rojoVino})`
@@ -370,13 +426,13 @@ const FotoUploader: React.FC = () => {
                 ) : (
                   <>
                     <Upload size={20} className="inline mr-2" />
-                    Subir {uploadState.files.length} foto{uploadState.files.length !== 1 ? 's' : ''}
+                    Subir {selectedFiles.length} foto{selectedFiles.length !== 1 ? 's' : ''}
                   </>
                 )}
               </button>
               
               {/* Botón de reset */}
-              {(uploadState.files.length > 0 || uploadState.success) && (
+              {(selectedFiles.length > 0 || uploadState.success) && (
                 <button
                   onClick={handleReset}
                   className="ml-4 px-6 py-3 rounded-full font-medium border-2 transition-all duration-300 hover:scale-105"
