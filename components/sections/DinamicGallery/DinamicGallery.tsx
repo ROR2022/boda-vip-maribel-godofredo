@@ -2,8 +2,9 @@
 
 import React, { useState } from 'react';
 import Image from 'next/image';
-import { Camera, Users, Calendar, RefreshCw, Filter, ChevronLeft, ChevronRight, Loader2, AlertCircle, Heart, Cloud, Server } from 'lucide-react';
+import { Camera, Users, Calendar, RefreshCw, Filter, ChevronLeft, ChevronRight, Loader2, AlertCircle, Heart, Cloud, Server, Trash2 } from 'lucide-react';
 import { useHybridGallery } from './hooks/useHybridGallery';
+import DeleteConfirmationModal from './DeleteConfirmationModal';
 
 // Tipos importados del hook híbrido - usar la misma interfaz
 interface HybridPhoto {
@@ -54,11 +55,20 @@ const DinamicGallery: React.FC = () => {
     filters, 
     setFilters, 
     refresh,
-    getPhotoDisplayUrl
+    getPhotoDisplayUrl,
+    // 🗑️ Funciones de eliminación
+    deletePhoto,
+    isPhotoDeleting,
+    deleteError,
+    clearDeleteError
   } = useHybridGallery();
 
   const [selectedPhoto, setSelectedPhoto] = useState<HybridPhoto | null>(null);
   const [showFilters, setShowFilters] = useState(false);
+  
+  // 🗑️ Estados para eliminación
+  const [photoToDelete, setPhotoToDelete] = useState<HybridPhoto | null>(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   // Función para formatear fecha
   const formatDate = (dateString: string) => {
@@ -78,6 +88,35 @@ const DinamicGallery: React.FC = () => {
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  };
+
+  // 🗑️ Handlers para eliminación
+  const handleDeleteClick = (photo: HybridPhoto, e: React.MouseEvent) => {
+    e.stopPropagation(); // Evitar abrir modal de vista
+    setPhotoToDelete(photo);
+    setShowDeleteModal(true);
+    // Limpiar error anterior si existe
+    if (deleteError) {
+      clearDeleteError();
+    }
+  };
+
+  const handleConfirmDelete = async (photoId: string) => {
+    const success = await deletePhoto(photoId);
+    if (success) {
+      setShowDeleteModal(false);
+      setPhotoToDelete(null);
+      // Opcional: podrías agregar un toast de éxito aquí
+    }
+    // Si hay error, el modal se mantendrá abierto y se mostrará el error
+  };
+
+  const handleCloseDeleteModal = () => {
+    if (!photoToDelete || !isPhotoDeleting(photoToDelete.id)) {
+      setShowDeleteModal(false);
+      setPhotoToDelete(null);
+      clearDeleteError();
+    }
   };
 
   // Si no hay fotos y no está cargando, mostrar mensaje
@@ -306,6 +345,31 @@ const DinamicGallery: React.FC = () => {
           </div>
         )}
 
+        {/* Error de eliminación */}
+        {deleteError && (
+          <div 
+            className="p-4 rounded-lg border-l-4 mb-6"
+            style={{
+              backgroundColor: `${VIP_COLORS.rojoVino}10`,
+              borderColor: VIP_COLORS.rojoVino
+            }}
+          >
+            <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                <Trash2 size={20} style={{ color: VIP_COLORS.rojoVino }} className="mr-2" />
+                <p style={{ color: VIP_COLORS.rojoVino }}>Error al eliminar: {deleteError}</p>
+              </div>
+              <button
+                onClick={clearDeleteError}
+                className="text-sm underline hover:no-underline"
+                style={{ color: VIP_COLORS.rojoVino }}
+              >
+                Cerrar
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Grid de Fotos */}
         {!loading && photos.length > 0 && (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-8">
@@ -335,6 +399,30 @@ const DinamicGallery: React.FC = () => {
                   )}
                 </div>
                 
+                {/* 🗑️ Botón de eliminación */}
+                <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  {isPhotoDeleting(photo.id) ? (
+                    <div 
+                      className="w-8 h-8 rounded-full flex items-center justify-center"
+                      style={{ backgroundColor: 'rgba(255, 255, 255, 0.9)' }}
+                    >
+                      <Loader2 size={16} className="animate-spin" style={{ color: VIP_COLORS.rojoVino }} />
+                    </div>
+                  ) : (
+                    <button
+                      onClick={(e) => handleDeleteClick(photo, e)}
+                      className="w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110"
+                      style={{ 
+                        backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                        color: VIP_COLORS.rojoVino
+                      }}
+                      aria-label={`Eliminar foto ${photo.originalName}`}
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  )}
+                </div>
+                
                 {/* Overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 
@@ -346,7 +434,7 @@ const DinamicGallery: React.FC = () => {
                 </div>
 
                 {/* Icono de love en la esquina */}
-                <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <div className="absolute top-2 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                   <Heart size={20} style={{ color: VIP_COLORS.rojoVino }} fill="white" />
                 </div>
               </div>
@@ -476,6 +564,15 @@ const DinamicGallery: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* 🗑️ Modal de Confirmación de Eliminación */}
+      <DeleteConfirmationModal
+        photo={photoToDelete}
+        isOpen={showDeleteModal}
+        onClose={handleCloseDeleteModal}
+        onConfirm={handleConfirmDelete}
+        isDeleting={photoToDelete ? isPhotoDeleting(photoToDelete.id) : false}
+      />
     </section>
   );
 };

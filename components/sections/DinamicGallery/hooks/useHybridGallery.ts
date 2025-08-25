@@ -106,6 +106,9 @@ interface HybridGalleryState {
   stats: HybridGalleryStats | null;
   pagination: HybridGalleryPagination | null;
   filters: HybridGalleryFilters;
+  // 🗑️ Estados para eliminación de fotos
+  deletingPhotos: string[]; // IDs de fotos siendo eliminadas
+  deleteError: string | null;
 }
 
 /**
@@ -125,7 +128,10 @@ export const useHybridGallery = () => {
       source: 'all',
       sortBy: 'uploadedAt',
       sortOrder: 'desc'
-    }
+    },
+    // 🗑️ Estados iniciales para eliminación
+    deletingPhotos: [],
+    deleteError: null
   });
 
   /**
@@ -406,6 +412,84 @@ export const useHybridGallery = () => {
     }
   }, []);
 
+  /**
+   * 🗑️ Elimina una foto específica
+   */
+  const deletePhoto = useCallback(async (photoId: string): Promise<boolean> => {
+    // Agregar el ID a la lista de fotos siendo eliminadas
+    setState(prev => ({
+      ...prev,
+      deletingPhotos: [...prev.deletingPhotos, photoId],
+      deleteError: null
+    }));
+
+    try {
+      console.log('🗑️ Deleting photo:', photoId);
+
+      const response = await fetch(`/api/photos/${photoId}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || `Error ${response.status}: ${response.statusText}`);
+      }
+
+      const result = await response.json();
+      console.log('✅ Photo deleted successfully:', result);
+
+      // Actualizar estado local removiendo la foto
+      setState(prev => ({
+        ...prev,
+        photos: prev.photos.filter(photo => photo.id !== photoId),
+        deletingPhotos: prev.deletingPhotos.filter(id => id !== photoId),
+        deleteError: null,
+        // Actualizar estadísticas si están disponibles
+        stats: prev.stats ? {
+          ...prev.stats,
+          totalPhotos: prev.stats.totalPhotos - 1,
+          sourceBreakdown: {
+            ...prev.stats.sourceBreakdown,
+            // Decrementar el tipo de fuente correspondiente
+            [result.deletedPhoto?.uploadSource === 'cloudinary' ? 'cloudinary' : 'local']: 
+              Math.max(0, prev.stats.sourceBreakdown[result.deletedPhoto?.uploadSource === 'cloudinary' ? 'cloudinary' : 'local'] - 1)
+          }
+        } : null
+      }));
+
+      return true;
+
+    } catch (error) {
+      console.error('❌ Error deleting photo:', error);
+      
+      // Remover del estado de eliminación y mostrar error
+      setState(prev => ({
+        ...prev,
+        deletingPhotos: prev.deletingPhotos.filter(id => id !== photoId),
+        deleteError: error instanceof Error ? error.message : 'Error desconocido al eliminar foto'
+      }));
+
+      return false;
+    }
+  }, []);
+
+  /**
+   * 🗑️ Verifica si una foto específica está siendo eliminada
+   */
+  const isPhotoDeleting = useCallback((photoId: string): boolean => {
+    return state.deletingPhotos.includes(photoId);
+  }, [state.deletingPhotos]);
+
+  /**
+   * 🗑️ Limpia el error de eliminación
+   */
+  const clearDeleteError = useCallback(() => {
+    setState(prev => ({ ...prev, deleteError: null }));
+  }, []);
+
   // Cargar fotos al montar y cuando cambien los filtros
   useEffect(() => {
     loadPhotos(1);
@@ -422,6 +506,12 @@ export const useHybridGallery = () => {
     refresh,
     goToPage,
     getPhotoDisplayUrl,
-    incrementPhotoView
+    incrementPhotoView,
+    // 🗑️ Funciones de eliminación
+    deletePhoto,
+    isPhotoDeleting,
+    deletingPhotos: state.deletingPhotos,
+    deleteError: state.deleteError,
+    clearDeleteError
   };
 };
