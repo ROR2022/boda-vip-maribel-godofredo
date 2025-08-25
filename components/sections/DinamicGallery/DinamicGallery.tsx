@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Image from 'next/image';
-import { Camera, Users, Calendar, RefreshCw, Filter, ChevronLeft, ChevronRight, Loader2, AlertCircle, Heart, Cloud, Server, Trash2 } from 'lucide-react';
+import { Camera, Users, Calendar, RefreshCw, Filter, ChevronLeft, ChevronRight, Loader2, AlertCircle, Heart, Cloud, Server, Trash2, X } from 'lucide-react';
 import { useHybridGallery } from './hooks/useHybridGallery';
 import DeleteConfirmationModal from './DeleteConfirmationModal';
 
@@ -491,9 +491,23 @@ const DinamicGallery: React.FC = () => {
           onClick={() => setSelectedPhoto(null)}
         >
           <div 
-            className="max-w-4xl max-h-full bg-white rounded-2xl overflow-hidden shadow-2xl"
+            className="max-w-4xl max-h-full bg-white rounded-2xl overflow-hidden shadow-2xl relative"
             onClick={(e) => e.stopPropagation()}
           >
+            {/* 🔘 Botón de cerrar en esquina superior derecha */}
+            <button
+              onClick={() => setSelectedPhoto(null)}
+              className="absolute top-4 right-4 z-10 w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110"
+              style={{
+                backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                color: VIP_COLORS.verdeBosque,
+                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)'
+              }}
+              aria-label="Cerrar modal"
+            >
+              <X size={20} />
+            </button>
+
             <div className="flex flex-col md:flex-row">
               {/* Imagen usando URL híbrida */}
               <div className="flex-1 p-4 relative">

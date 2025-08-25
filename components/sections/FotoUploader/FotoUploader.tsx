@@ -174,7 +174,9 @@ const FotoUploader: React.FC = () => {
         {/* Header VIP */}
         <div className="text-center mb-12">
           {/* Indicador de sistema de almacenamiento */}
-          <div className="flex justify-center items-center gap-2 mb-4">
+          <div 
+          style={{ display:'none'}}
+          className="flex justify-center items-center gap-2 mb-4">
             <div 
               className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium border-2 transition-all duration-300 ${
                 systemType === 'cloudinary'
