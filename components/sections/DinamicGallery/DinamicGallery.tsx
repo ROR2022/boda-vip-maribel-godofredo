@@ -190,7 +190,7 @@ const DinamicGallery: React.FC = () => {
             Momentos Compartidos
           </h2>
           
-          {stats && (
+          {/* {stats && (
             <p 
               className="text-xl mb-2 font-medium"
               style={{ color: VIP_COLORS.verdeBosque }}
@@ -201,7 +201,7 @@ const DinamicGallery: React.FC = () => {
                 📁 {stats.sourceBreakdown.local} locales • ☁️ {stats.sourceBreakdown.cloudinary} en la nube
               </span>
             </p>
-          )}
+          )} */}
         </div>
 
         {/* Controles y Filtros */}
