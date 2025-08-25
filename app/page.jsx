@@ -16,6 +16,7 @@ import InvitationEnvelope from "../components/sections/InvitationEnvelope"
 import WelcomeMessage from "../components/sections/InvitationWelcome"
 import { PremiumGallery } from "@/components/sections/PremiumGallery"
 import CustomInvitations from "@/components/sections/CustomInvitations/components/CustomInvitations"
+import QRpromo from "@/components/sections/QRpromo/QRpromo";
 
 export default function WeddingInvitation() {
   const [isOpenInvitation, setIsOpenInvitation] = useState(false);
@@ -72,6 +73,7 @@ export default function WeddingInvitation() {
       {/* <ReceptionSection /> */}
       <TimelineSection />
       <PremiumGallery />
+      <QRpromo />
       
       <DressCodeSection />
       {/* <GiftsSection /> */}
