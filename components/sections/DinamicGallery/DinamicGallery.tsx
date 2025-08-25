@@ -225,6 +225,7 @@ const DinamicGallery: React.FC = () => {
             onClick={() => setShowFilters(!showFilters)}
             className="flex items-center px-4 py-2 rounded-lg transition-all duration-300 hover:scale-105"
             style={{
+              display: 'none',
               background: `linear-gradient(135deg, ${VIP_COLORS.verdeEsmeralda}, ${VIP_COLORS.verdeBosque})`,
               color: 'white'
             }}
