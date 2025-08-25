@@ -205,7 +205,7 @@ const DinamicGallery: React.FC = () => {
         </div>
 
         {/* Controles y Filtros */}
-        <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
+        <div className="mb-8 flex flex-col items-center justify-center gap-4">
           {/* Botón Refresh */}
           <button
             onClick={refresh}
