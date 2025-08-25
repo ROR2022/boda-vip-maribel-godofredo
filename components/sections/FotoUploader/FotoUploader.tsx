@@ -1,10 +1,10 @@
 'use client'
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import Image from 'next/image';
-import { Camera, Upload, X, Image as ImageIcon, CheckCircle, AlertCircle, Loader2, Cloud, Server, RefreshCw } from 'lucide-react';
+import { Camera, Upload, X, Image as ImageIcon, CheckCircle, AlertCircle, Loader2, Cloud, Server, RefreshCw, Clock, Pause, Play } from 'lucide-react';
 import { VIP_COLORS, UI_CONFIG } from './constants/upload.constants';
-import { UploaderFormData, UploadFile } from './types/upload.types';
+import { UploaderFormData } from './types/upload.types';
 import { useHybridUpload } from './hooks/useHybridUpload';
 
 /**
@@ -14,6 +14,15 @@ const FotoUploader: React.FC = () => {
   const [formData, setFormData] = useState<UploaderFormData>({});
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  
+  // Estados para auto-reset después del éxito
+  const [countdown, setCountdown] = useState(0);
+  const [autoResetEnabled, setAutoResetEnabled] = useState(true);
+  const autoResetTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const countdownTimerRef = useRef<NodeJS.Timeout | null>(null);
+  
+  // Configuración del auto-reset
+  const AUTO_RESET_DELAY = 10; // segundos
   
   // Hook híbrido para manejar uploads (Original + Cloudinary)
   const { 
@@ -55,11 +64,97 @@ const FotoUploader: React.FC = () => {
   };
 
   // Handler para resetear todo
-  const handleReset = () => {
+  const handleReset = useCallback(() => {
     setSelectedFiles([]);
     resetUpload();
     setFormData({});
+    setCountdown(0);
+    setAutoResetEnabled(true);
+    
+    // Limpiar timers activos
+    if (autoResetTimerRef.current) {
+      clearTimeout(autoResetTimerRef.current);
+      autoResetTimerRef.current = null;
+    }
+    if (countdownTimerRef.current) {
+      clearInterval(countdownTimerRef.current);
+      countdownTimerRef.current = null;
+    }
+  }, [resetUpload]);
+
+  // Cancelar auto-reset
+  const cancelAutoReset = () => {
+    console.log('🛑 Auto-reset cancelado por el usuario');
+    setAutoResetEnabled(false);
+    setCountdown(0);
+    
+    if (autoResetTimerRef.current) {
+      clearTimeout(autoResetTimerRef.current);
+      autoResetTimerRef.current = null;
+    }
+    if (countdownTimerRef.current) {
+      clearInterval(countdownTimerRef.current);
+      countdownTimerRef.current = null;
+    }
   };
+
+  // Acelerar reset (ejecutar inmediatamente)
+  const accelerateReset = () => {
+    console.log('⚡ Reset acelerado por el usuario');
+    cancelAutoReset();
+    handleReset();
+  };
+
+  // Effect para manejar auto-reset después del éxito
+  useEffect(() => {
+    if (uploadState.success && autoResetEnabled && selectedFiles.length > 0) {
+      console.log('🕐 Iniciando auto-reset en', AUTO_RESET_DELAY, 'segundos');
+      
+      // Iniciar countdown visual
+      setCountdown(AUTO_RESET_DELAY);
+      
+      // Timer principal para el reset automático
+      autoResetTimerRef.current = setTimeout(() => {
+        console.log('⏰ Ejecutando auto-reset automático');
+        handleReset();
+      }, AUTO_RESET_DELAY * 1000);
+      
+      // Timer para actualizar el countdown cada segundo
+      let currentCount = AUTO_RESET_DELAY;
+      countdownTimerRef.current = setInterval(() => {
+        currentCount -= 1;
+        setCountdown(currentCount);
+        
+        if (currentCount <= 0) {
+          clearInterval(countdownTimerRef.current!);
+        }
+      }, 1000);
+    }
+    
+    // Cleanup cuando el estado de éxito cambie
+    return () => {
+      if (autoResetTimerRef.current) {
+        clearTimeout(autoResetTimerRef.current);
+        autoResetTimerRef.current = null;
+      }
+      if (countdownTimerRef.current) {
+        clearInterval(countdownTimerRef.current);
+        countdownTimerRef.current = null;
+      }
+    };
+  }, [uploadState.success, autoResetEnabled, selectedFiles.length, handleReset]);
+
+  // Cleanup al desmontar el componente
+  useEffect(() => {
+    return () => {
+      if (autoResetTimerRef.current) {
+        clearTimeout(autoResetTimerRef.current);
+      }
+      if (countdownTimerRef.current) {
+        clearInterval(countdownTimerRef.current);
+      }
+    };
+  }, []);
 
   return (
     <section 
@@ -332,19 +427,93 @@ const FotoUploader: React.FC = () => {
           </div>
         )}
 
-        {/* Mensaje de éxito */}
+        {/* Mensaje de éxito con auto-reset */}
         {uploadState.success && (
           <div 
-            className="p-4 rounded-lg border-l-4 mb-6"
+            className="p-6 rounded-2xl border-l-4 mb-6 shadow-lg"
             style={{
               backgroundColor: `${VIP_COLORS.verdeEsmeralda}10`,
               borderColor: VIP_COLORS.verdeEsmeralda
             }}
           >
-            <div className="flex items-center">
-              <CheckCircle size={20} style={{ color: VIP_COLORS.verdeEsmeralda }} className="mr-2" />
-              <p style={{ color: VIP_COLORS.verdeEsmeralda }}>¡Fotos subidas exitosamente!</p>
+            <div className="flex items-start justify-between">
+              <div className="flex items-center flex-1">
+                <CheckCircle size={24} style={{ color: VIP_COLORS.verdeEsmeralda }} className="mr-3 flex-shrink-0" />
+                <div>
+                  <p 
+                    className="text-lg font-semibold mb-1"
+                    style={{ color: VIP_COLORS.verdeEsmeralda }}
+                  >
+                    ¡Fotos subidas exitosamente!
+                  </p>
+                  {countdown > 0 ? (
+                    <div className="flex items-center gap-2 text-sm">
+                      <Clock size={16} style={{ color: VIP_COLORS.verdeBosque }} />
+                      <span style={{ color: VIP_COLORS.verdeBosque }}>
+                        Preparando para más fotos en <strong>{countdown}</strong> segundo{countdown !== 1 ? 's' : ''}...
+                      </span>
+                    </div>
+                  ) : (
+                    <p 
+                      className="text-sm"
+                      style={{ color: VIP_COLORS.verdeBosque }}
+                    >
+                      {systemType === 'cloudinary' ? '☁️ Guardadas en la nube' : '💾 Guardadas en el servidor'}
+                    </p>
+                  )}
+                </div>
+              </div>
+              
+              {/* Controles del auto-reset */}
+              {countdown > 0 && (
+                <div className="flex items-center gap-2 ml-4">
+                  <button
+                    onClick={accelerateReset}
+                    className="px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105"
+                    style={{
+                      backgroundColor: VIP_COLORS.verdeEsmeralda,
+                      color: 'white'
+                    }}
+                    title="Subir más fotos ahora"
+                  >
+                    <Play size={14} className="inline mr-1" />
+                    Ahora
+                  </button>
+                  
+                  <button
+                    onClick={cancelAutoReset}
+                    className="px-3 py-2 rounded-lg text-sm font-medium border-2 transition-all duration-200 hover:scale-105"
+                    style={{
+                      borderColor: VIP_COLORS.dorado,
+                      color: VIP_COLORS.verdeBosque,
+                      backgroundColor: 'transparent'
+                    }}
+                    title="Cancelar reinicio automático"
+                  >
+                    <Pause size={14} className="inline mr-1" />
+                    Cancelar
+                  </button>
+                </div>
+              )}
             </div>
+            
+            {/* Barra de progreso visual del countdown */}
+            {countdown > 0 && (
+              <div className="mt-4">
+                <div 
+                  className="h-2 rounded-full overflow-hidden"
+                  style={{ backgroundColor: `${VIP_COLORS.dorado}20` }}
+                >
+                  <div 
+                    className="h-full transition-all duration-1000 ease-linear"
+                    style={{
+                      backgroundColor: VIP_COLORS.verdeEsmeralda,
+                      width: `${((AUTO_RESET_DELAY - countdown) / AUTO_RESET_DELAY) * 100}%`
+                    }}
+                  />
+                </div>
+              </div>
+            )}
           </div>
         )}
 
@@ -432,7 +601,7 @@ const FotoUploader: React.FC = () => {
               </button>
               
               {/* Botón de reset */}
-              {(selectedFiles.length > 0 || uploadState.success) && (
+              {(selectedFiles.length > 0 || uploadState.success) && !countdown && (
                 <button
                   onClick={handleReset}
                   className="ml-4 px-6 py-3 rounded-full font-medium border-2 transition-all duration-300 hover:scale-105"

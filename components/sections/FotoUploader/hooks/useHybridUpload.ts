@@ -1,7 +1,50 @@
 import { useState, useCallback, useRef } from 'react';
 import { UploadState, UploaderFormData, UploadFile } from '../types/upload.types';
 import { validateFileList, generateFileId } from '../utils/imageValidation';
-import { ERROR_MESSAGES } from '@/components/sections/FotoUploader/constants/upload.constants';
+// import { ERROR_MESSAGES } from '@/components/sections/FotoUploader/constants/upload.constants';
+
+// Interfaz para los datos de Cloudinary
+interface CloudinaryData {
+  public_id: string;
+  secure_url: string;
+  url?: string;
+  width?: number;
+  height?: number;
+  format?: string;
+  resource_type?: string;
+  bytes?: number;
+}
+
+// Interfaz para los resultados de upload
+interface UploadResult {
+  filename?: string;
+  filePath?: string;
+  cloudinaryData?: CloudinaryData;
+  [key: string]: unknown;
+}
+
+// Interfaz para el registro en MongoDB
+interface PhotoRegistration {
+  filename: string;
+  originalName: string;
+  cloudinaryId?: string;
+  cloudinaryUrl?: string;
+  localPath?: string;
+  uploadSource: 'cloudinary' | 'local';
+  fileSize: number;
+  mimeType: string;
+  dimensions: {
+    width: number;
+    height: number;
+  };
+  uploader: {
+    name?: string;
+    ip: string;
+    userAgent: string;
+  };
+  eventMoment?: string;
+  comment?: string;
+}
 
 /**
  * Hook híbrido para manejo de subida de archivos
@@ -21,6 +64,120 @@ export const useHybridUpload = () => {
   const abortControllerRef = useRef<AbortController | null>(null);
 
   /**
+   * Obtiene la IP del cliente
+   */
+  const getClientIP = async (): Promise<string> => {
+    try {
+      const response = await fetch('https://api.ipify.org?format=json');
+      const data = await response.json();
+      return data.ip || '0.0.0.0';
+    } catch (error) {
+      console.warn('Could not get client IP:', error);
+      return '0.0.0.0';
+    }
+  };
+
+  /**
+   * Obtiene las dimensiones de una imagen
+   */
+  const getImageDimensions = (file: File): Promise<{width: number, height: number}> => {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      const url = URL.createObjectURL(file);
+      
+      img.onload = () => {
+        URL.revokeObjectURL(url);
+        resolve({
+          width: img.naturalWidth,
+          height: img.naturalHeight
+        });
+      };
+      
+      img.onerror = () => {
+        URL.revokeObjectURL(url);
+        reject(new Error('Failed to load image'));
+      };
+      
+      img.src = url;
+    });
+  };
+
+  /**
+   * Registra una foto en MongoDB
+   */
+  const registerPhotoInDB = useCallback(async (
+    file: File,
+    uploadResult: UploadResult,
+    uploadSource: 'cloudinary' | 'local',
+    formData?: UploaderFormData
+  ): Promise<void> => {
+    try {
+      console.log('💾 Registering photo in MongoDB...', {
+        filename: file.name,
+        uploadSource,
+        uploadResult
+      });
+
+      // Obtener IP del cliente
+      const clientIP = await getClientIP();
+      
+      // Obtener dimensiones de la imagen
+      const dimensions = await getImageDimensions(file);
+
+      // Preparar datos para el registro
+      const photoData: PhotoRegistration = {
+        filename: uploadResult.filename || file.name,
+        originalName: file.name,
+        uploadSource,
+        fileSize: file.size,
+        mimeType: file.type,
+        dimensions,
+        uploader: {
+          name: formData?.uploaderName || formData?.userName,
+          ip: clientIP,
+          userAgent: navigator.userAgent
+        },
+        eventMoment: formData?.eventMoment,
+        comment: formData?.comment
+      };
+
+      // Agregar datos específicos según el tipo de upload
+      if (uploadSource === 'cloudinary' && uploadResult.cloudinaryData) {
+        photoData.cloudinaryId = uploadResult.cloudinaryData.public_id;
+        photoData.cloudinaryUrl = uploadResult.cloudinaryData.secure_url;
+      } else if (uploadSource === 'local' && uploadResult.filePath) {
+        photoData.localPath = uploadResult.filePath;
+      }
+
+      // Registrar en MongoDB
+      const response = await fetch('/api/photos', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(photoData),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('❌ Failed to register photo in MongoDB:', {
+          status: response.status,
+          error: errorText
+        });
+        // No lanzamos error para no fallar el upload, solo logueamos
+        return;
+      }
+
+      const result = await response.json();
+      console.log('✅ Photo registered successfully in MongoDB:', result);
+      
+    } catch (error) {
+      console.error('❌ Error registering photo in MongoDB:', error);
+      // No lanzamos error para no fallar el upload
+    }
+  }, []);
+
+  /**
    * Sube archivos usando Cloudinary
    */
   const uploadWithCloudinary = useCallback(async (
@@ -34,7 +191,7 @@ export const useHybridUpload = () => {
       
       // Agregar archivos con el nombre correcto que espera la API
       filesToUpload.forEach((fileObj) => {
-        uploadFormData.append('files', fileObj.file); // Cambiado de 'file' a 'files'
+        uploadFormData.append('files', fileObj.file);
       });
 
       // Agregar metadatos opcionales
@@ -69,13 +226,39 @@ export const useHybridUpload = () => {
 
       const result = await response.json();
       console.log('✅ Cloudinary upload successful:', result);
+
+      // 🆕 Registrar automáticamente en MongoDB
+      if (result.data && result.data.files && Array.isArray(result.data.files)) {
+        for (let i = 0; i < result.data.files.length && i < filesToUpload.length; i++) {
+          const uploadResult = result.data.files[i];
+          const file = filesToUpload[i].file;
+          
+          // Convertir estructura de la API a la estructura esperada por registerPhotoInDB
+          const adaptedResult: UploadResult = {
+            filename: uploadResult.originalName,
+            cloudinaryData: {
+              public_id: uploadResult.cloudinaryId,
+              secure_url: uploadResult.urls?.original || '',
+              url: uploadResult.urls?.original || '',
+              width: uploadResult.metadata?.width,
+              height: uploadResult.metadata?.height,
+              format: uploadResult.metadata?.format,
+              bytes: uploadResult.metadata?.optimizedSize
+            }
+          };
+          
+          // Registrar cada archivo en MongoDB
+          await registerPhotoInDB(file, adaptedResult, 'cloudinary', formData);
+        }
+      }
+
       return true;
 
     } catch (error) {
       console.error('❌ Cloudinary upload error:', error);
       return false;
     }
-  }, []);
+  }, [registerPhotoInDB]);
 
   /**
    * Sube archivos usando el sistema original
@@ -126,13 +309,25 @@ export const useHybridUpload = () => {
 
       const result = await response.json();
       console.log('✅ Original upload successful:', result);
+
+      // 🆕 Registrar automáticamente en MongoDB
+      if (result.uploads && Array.isArray(result.uploads)) {
+        for (let i = 0; i < result.uploads.length && i < filesToUpload.length; i++) {
+          const uploadResult = result.uploads[i];
+          const file = filesToUpload[i].file;
+          
+          // Registrar cada archivo en MongoDB
+          await registerPhotoInDB(file, uploadResult, 'local', formData);
+        }
+      }
+
       return true;
 
     } catch (error) {
       console.error('❌ Original upload error:', error);
       return false;
     }
-  }, []);
+  }, [registerPhotoInDB]);
 
   /**
    * Detecta automáticamente el sistema de subida disponible
@@ -149,7 +344,7 @@ export const useHybridUpload = () => {
         console.log('☁️ Cloudinary system detected and available');
         return 'cloudinary';
       }
-    } catch (error) {
+    } catch {
       console.log('📁 Cloudinary not available, using original system');
     }
 

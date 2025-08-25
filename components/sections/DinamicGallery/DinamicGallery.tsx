@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { Camera, Users, Calendar, RefreshCw, Filter, ChevronLeft, ChevronRight, Loader2, AlertCircle, Heart, Cloud, Server } from 'lucide-react';
 import { useHybridGallery } from './hooks/useHybridGallery';
 
-// Tipos importados del hook híbrido
+// Tipos importados del hook híbrido - usar la misma interfaz
 interface HybridPhoto {
   id: string;
   originalName: string;
@@ -14,14 +14,18 @@ interface HybridPhoto {
   size: number;
   eventMoment: string;
   comment?: string;
-  paths?: {
-    original: string;
-    compressed?: string;
-    thumbnail?: string;
+  displayUrl: string;        
+  thumbnailUrl?: string;     
+  source: 'cloudinary' | 'local'; 
+  filename: string;
+  mimeType: string;
+  dimensions: {
+    width: number;
+    height: number;
   };
-  cloudinaryId?: string;
-  cloudinaryUrl?: string;
-  source: 'original' | 'cloudinary';
+  viewCount?: number;
+  status: string;
+  isPublic: boolean;
 }
 
 // Paleta VIP Mexicana (importada desde constants)
@@ -154,7 +158,7 @@ const DinamicGallery: React.FC = () => {
               {stats.totalPhotos} foto{stats.totalPhotos !== 1 ? 's' : ''} compartida{stats.totalPhotos !== 1 ? 's' : ''} por {stats.uploaders.length} invitado{stats.uploaders.length !== 1 ? 's' : ''}
               <br />
               <span className="text-sm opacity-75">
-                📁 {stats.sourceBreakdown.original} locales • ☁️ {stats.sourceBreakdown.cloudinary} en la nube
+                📁 {stats.sourceBreakdown.local} locales • ☁️ {stats.sourceBreakdown.cloudinary} en la nube
               </span>
             </p>
           )}
@@ -262,7 +266,7 @@ const DinamicGallery: React.FC = () => {
                 </label>
                 <select
                   value={filters.source}
-                  onChange={(e) => setFilters({ source: e.target.value as 'all' | 'original' | 'cloudinary' })}
+                  onChange={(e) => setFilters({ source: e.target.value as 'all' | 'local' | 'cloudinary' })}
                   className="w-full px-4 py-3 rounded-lg border-2 transition-colors duration-200 focus:outline-none"
                   style={{
                     borderColor: `${VIP_COLORS.dorado}60`,
@@ -270,7 +274,7 @@ const DinamicGallery: React.FC = () => {
                   }}
                 >
                   <option value="all">Todas las fuentes</option>
-                  <option value="original">📁 Servidor Local ({stats.sourceBreakdown.original})</option>
+                  <option value="local">📁 Servidor Local ({stats.sourceBreakdown.local})</option>
                   <option value="cloudinary">☁️ Cloudinary ({stats.sourceBreakdown.cloudinary})</option>
                 </select>
               </div>

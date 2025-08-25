@@ -51,7 +51,7 @@ const sanitizeUserInput = (input: string | null): string => {
 // Función para guardar metadata del upload
 const saveUploadMetadata = async (metadata: {
   uploadId: string;
-  files: any[];
+  files: Record<string, unknown>[];
   uploaderName: string;
   eventMoment: string;
   comment: string;

@@ -2,7 +2,7 @@
 // GET /api/fotos-galeria-cloudinary
 
 import { NextRequest, NextResponse } from 'next/server';
-import cloudinary, { generateOptimizedUrl, validateCloudinaryConfig } from '@/lib/cloudinary';
+import { v2 as cloudinary } from 'cloudinary';
 
 // Interfaz para foto de la galería
 interface GalleryPhoto {
@@ -54,6 +54,43 @@ interface Pagination {
   hasPrev: boolean;
 }
 
+// Helper functions para extraer tipos de manera segura
+const getString = (value: unknown, fallback: string = ''): string => {
+  return typeof value === 'string' ? value : fallback;
+};
+
+const getNumber = (value: unknown, fallback: number = 0): number => {
+  return typeof value === 'number' ? value : fallback;
+};
+
+// Función para validar configuración de Cloudinary
+const validateCloudinaryConfig = (): boolean => {
+  return !!(
+    process.env.CLOUDINARY_CLOUD_NAME &&
+    process.env.CLOUDINARY_API_KEY &&
+    process.env.CLOUDINARY_API_SECRET
+  );
+};
+
+// Función para generar URLs optimizadas
+const generateOptimizedUrl = (publicId: unknown, type: string): string => {
+  const id = getString(publicId);
+  if (!id) return '';
+
+  const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
+  const baseUrl = `https://res.cloudinary.com/${cloudName}/image/upload`;
+
+  const transformations = {
+    compressed: 'q_auto,f_auto,w_800',
+    thumbnail: 'q_auto,f_auto,w_200,h_200,c_fill',
+    gallery: 'q_auto,f_auto,w_400,h_300,c_fit',
+    modal: 'q_auto,f_auto,w_1200'
+  };
+
+  const transform = transformations[type as keyof typeof transformations] || 'q_auto,f_auto';
+  return `${baseUrl}/${transform}/${id}`;
+};
+
 // Función para construir la expresión de búsqueda de Cloudinary
 const buildSearchExpression = (filters: {
   eventMoment?: string;
@@ -86,30 +123,30 @@ const buildSearchExpression = (filters: {
 };
 
 // Función para formatear recurso de Cloudinary a foto de galería
-const formatCloudinaryResource = (resource: any): GalleryPhoto => {
-  const context = resource.context || {};
+const formatCloudinaryResource = (resource: Record<string, unknown>): GalleryPhoto => {
+  const context = (resource.context as Record<string, unknown>) || {};
   
   return {
-    id: resource.public_id,
-    originalName: context.original_filename || resource.filename || 'imagen',
-    cloudinaryId: resource.public_id,
-    uploadedAt: resource.created_at,
-    uploaderName: context.uploaderName || 'Anónimo',
-    eventMoment: context.eventMoment || 'general',
-    comment: context.comment || '',
-    size: resource.bytes || 0,
-    type: `image/${resource.format}`,
+    id: getString(resource.public_id),
+    originalName: getString(context.original_filename) || getString(resource.filename) || 'imagen',
+    cloudinaryId: getString(resource.public_id),
+    uploadedAt: getString(resource.created_at),
+    uploaderName: getString(context.uploaderName) || 'Anónimo',
+    eventMoment: getString(context.eventMoment) || 'general',
+    comment: getString(context.comment) || '',
+    size: getNumber(resource.bytes),
+    type: `image/${getString(resource.format)}`,
     urls: {
-      original: resource.secure_url,
+      original: getString(resource.secure_url),
       compressed: generateOptimizedUrl(resource.public_id, 'compressed'),
       thumbnail: generateOptimizedUrl(resource.public_id, 'thumbnail'),
       gallery: generateOptimizedUrl(resource.public_id, 'gallery'),
       modal: generateOptimizedUrl(resource.public_id, 'modal'),
     },
     metadata: {
-      width: resource.width || 0,
-      height: resource.height || 0,
-      format: resource.format || 'unknown',
+      width: getNumber(resource.width),
+      height: getNumber(resource.height),
+      format: getString(resource.format, 'unknown'),
     },
   };
 };

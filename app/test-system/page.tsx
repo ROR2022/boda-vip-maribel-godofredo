@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { CheckCircle, XCircle, AlertCircle, Loader2, Cloud, Server, Camera, Image } from 'lucide-react';
+import { CheckCircle, XCircle, AlertCircle, Loader2, Cloud, Server, Camera, Image as ImageIcon } from 'lucide-react';
 
 // Componente de prueba del sistema híbrido
 const HybridSystemTest: React.FC = () => {
@@ -98,7 +98,7 @@ const HybridSystemTest: React.FC = () => {
           } else {
             addLog(`⚠️ Endpoint inactivo: ${endpoint} (${response.status})`);
           }
-        } catch (error) {
+        } catch {
           addLog(`❌ Error endpoint: ${endpoint}`);
         }
       }
@@ -157,7 +157,7 @@ const HybridSystemTest: React.FC = () => {
             updateTestResult('uploadTest', 'success');
             return;
           }
-        } catch (error) {
+        } catch {
           addLog('⚠️ Upload Cloudinary falló, probando local...');
         }
 
@@ -174,7 +174,7 @@ const HybridSystemTest: React.FC = () => {
           } else {
             throw new Error('Upload local también falló');
           }
-        } catch (error) {
+        } catch {
           addLog('❌ Ambos sistemas de upload fallaron');
           updateTestResult('uploadTest', 'error');
         }
@@ -279,7 +279,7 @@ const HybridSystemTest: React.FC = () => {
 
               <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                 <div className="flex items-center space-x-3">
-                  <Image size={20} className="text-purple-500" />
+                  <ImageIcon size={20} className="text-purple-500" />
                   <span>Endpoints API</span>
                 </div>
                 {getIcon(testResults.apiEndpoints)}
@@ -299,7 +299,7 @@ const HybridSystemTest: React.FC = () => {
 
               <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                 <div className="flex items-center space-x-3">
-                  <Image size={20} className="text-indigo-500" />
+                  <ImageIcon size={20} className="text-indigo-500" />
                   <span>Sistema de Galería</span>
                 </div>
                 {getIcon(testResults.galleryTest)}
@@ -347,7 +347,7 @@ const HybridSystemTest: React.FC = () => {
               onClick={testApiEndpoints}
               className="p-4 bg-purple-50 hover:bg-purple-100 rounded-lg text-left transition-colors duration-200"
             >
-              <Image size={24} className="text-purple-500 mb-2" />
+              <ImageIcon size={24} className="text-purple-500 mb-2" />
               <div className="font-medium">Test APIs</div>
               <div className="text-sm text-gray-600">Verificar endpoints</div>
             </button>
@@ -365,7 +365,7 @@ const HybridSystemTest: React.FC = () => {
               onClick={testGallery}
               className="p-4 bg-indigo-50 hover:bg-indigo-100 rounded-lg text-left transition-colors duration-200"
             >
-              <Image size={24} className="text-indigo-500 mb-2" />
+              <ImageIcon size={24} className="text-indigo-500 mb-2" />
               <div className="font-medium">Test Galería</div>
               <div className="text-sm text-gray-600">Verificar fotos</div>
             </button>

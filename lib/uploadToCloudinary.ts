@@ -3,7 +3,6 @@
 
 import cloudinary, { 
   CloudinaryUploadResult, 
-  TRANSFORMATIONS, 
   CLOUDINARY_CONFIG,
   generateOptimizedUrl 
 } from './cloudinary';

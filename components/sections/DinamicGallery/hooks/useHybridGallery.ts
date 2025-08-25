@@ -1,9 +1,53 @@
-// 🖼️ useHybridGallery - Hook híbrido para mostrar fotos de ambos sistemas
-// Combina fotos del sistema original y Cloudinary en una sola galería
+// 🖼️ useHybridGallery - Hook híbrido para mostrar fotos desde MongoDB
+// Migrado para usar MongoDB como fuente única de verdad manteniendo la misma interfaz
 
 import { useState, useCallback, useEffect } from 'react';
 
-// Interfaces para la galería híbrida
+// Interface para la respuesta de la API de MongoDB
+interface MongoDBPhotoResponse {
+  _id: string;
+  originalName: string;
+  uploader: {
+    name: string;
+  };
+  uploadedAt: string;
+  fileSize: number;
+  eventMoment: string;
+  comment?: string;
+  displayUrl?: string;
+  cloudinaryUrl?: string;
+  localPath?: string;
+  optimizedThumbnailUrl?: string;
+  thumbnailUrl?: string;
+  uploadSource: 'cloudinary' | 'original';
+  filename: string;
+  mimeType: string;
+  dimensions: {
+    width: number;
+    height: number;
+  };
+  viewCount: number;
+  status: string;
+  isPublic: boolean;
+}
+
+// Interface para el sistema de fallback
+interface FallbackPhotoResponse {
+  id: string;
+  originalName: string;
+  uploaderName?: string;
+  uploadedAt: string;
+  size: number;
+  eventMoment?: string;
+  comment?: string;
+  paths?: {
+    original: string;
+    compressed?: string;
+    thumbnail?: string;
+  };
+}
+
+// Interfaces para la galería híbrida (actualizadas para MongoDB)
 interface HybridPhoto {
   id: string;
   originalName: string;
@@ -12,16 +56,20 @@ interface HybridPhoto {
   size: number;
   eventMoment: string;
   comment?: string;
-  // Paths para sistema original
-  paths?: {
-    original: string;
-    compressed?: string;
-    thumbnail?: string;
+  // URLs optimizadas desde MongoDB
+  displayUrl: string;        // URL principal para mostrar
+  thumbnailUrl?: string;     // URL del thumbnail
+  source: 'cloudinary' | 'local'; // Fuente de storage
+  // Datos adicionales de MongoDB
+  filename: string;
+  mimeType: string;
+  dimensions: {
+    width: number;
+    height: number;
   };
-  // Datos de Cloudinary
-  cloudinaryId?: string;
-  cloudinaryUrl?: string;
-  source: 'original' | 'cloudinary'; // Indicador del sistema de origen
+  viewCount?: number;
+  status: string;
+  isPublic: boolean;
 }
 
 interface HybridGalleryStats {
@@ -29,15 +77,18 @@ interface HybridGalleryStats {
   uploaders: string[];
   eventMoments: string[];
   sourceBreakdown: {
-    original: number;
     cloudinary: number;
+    local: number;
   };
+  totalViews: number;
 }
 
 interface HybridGalleryFilters {
   eventMoment: string;
   uploader: string;
-  source: 'all' | 'original' | 'cloudinary';
+  source: 'all' | 'cloudinary' | 'local';
+  sortBy: 'uploadedAt' | 'viewCount' | 'originalName';
+  sortOrder: 'asc' | 'desc';
 }
 
 interface HybridGalleryPagination {
@@ -58,7 +109,8 @@ interface HybridGalleryState {
 }
 
 /**
- * Hook para manejar galería híbrida (Original + Cloudinary)
+ * Hook para manejar galería híbrida desde MongoDB
+ * Migrado para usar MongoDB como fuente única de verdad
  */
 export const useHybridGallery = () => {
   const [state, setState] = useState<HybridGalleryState>({
@@ -70,15 +122,20 @@ export const useHybridGallery = () => {
     filters: {
       eventMoment: 'all',
       uploader: 'all',
-      source: 'all'
+      source: 'all',
+      sortBy: 'uploadedAt',
+      sortOrder: 'desc'
     }
   });
 
   /**
-   * Obtiene fotos del sistema original
+   * 🔄 Fallback al sistema anterior si MongoDB no está disponible
    */
-  const fetchOriginalPhotos = useCallback(async (): Promise<HybridPhoto[]> => {
+  const fallbackToOriginalSystems = useCallback(async (): Promise<{ photos: HybridPhoto[], pagination: HybridGalleryPagination }> => {
+    console.warn('📁 MongoDB unavailable, using original system fallback');
+    
     try {
+      // Intentar obtener del sistema original
       const response = await fetch('/api/fotos-galeria', {
         method: 'GET',
         headers: {
@@ -86,36 +143,82 @@ export const useHybridGallery = () => {
         },
       });
 
-      if (!response.ok) {
-        throw new Error(`Error ${response.status}: ${response.statusText}`);
-      }
+      if (response.ok) {
+        const data = await response.json();
+        const photos: HybridPhoto[] = (data.photos || []).map((photo: FallbackPhotoResponse): HybridPhoto => ({
+          id: `fallback-${photo.id}`,
+          originalName: photo.originalName,
+          uploaderName: photo.uploaderName || 'Invitado',
+          uploadedAt: photo.uploadedAt,
+          size: photo.size,
+          eventMoment: photo.eventMoment || 'general',
+          comment: photo.comment,
+          displayUrl: photo.paths?.compressed || photo.paths?.original || '/placeholder.jpg',
+          thumbnailUrl: photo.paths?.thumbnail,
+          source: 'local',
+          filename: photo.originalName,
+          mimeType: 'image/jpeg', // Default fallback
+          dimensions: { width: 0, height: 0 }, // Unknown dimensions
+          viewCount: 0,
+          status: 'ready',
+          isPublic: true
+        }));
 
-      const data = await response.json();
-      
-      // Convertir a formato híbrido
-      return (data.photos || []).map((photo: any): HybridPhoto => ({
-        id: `original-${photo.id}`,
-        originalName: photo.originalName,
-        uploaderName: photo.uploaderName || 'Invitado',
-        uploadedAt: photo.uploadedAt,
-        size: photo.size,
-        eventMoment: photo.eventMoment || 'General',
-        comment: photo.comment,
-        paths: photo.paths,
-        source: 'original' as const
-      }));
+        return {
+          photos,
+          pagination: {
+            page: 1,
+            pages: 1,
+            hasNext: false,
+            hasPrev: false,
+            total: photos.length
+          }
+        };
+      }
     } catch (error) {
-      console.error('Error fetching original photos:', error);
-      return [];
+      console.error('Fallback also failed:', error);
     }
+
+    // Si todo falla, retornar vacío
+    return {
+      photos: [],
+      pagination: {
+        page: 1,
+        pages: 1,
+        hasNext: false,
+        hasPrev: false,
+        total: 0
+      }
+    };
   }, []);
 
   /**
-   * Obtiene fotos de Cloudinary
+   * 🆕 Obtiene fotos desde MongoDB API
    */
-  const fetchCloudinaryPhotos = useCallback(async (): Promise<HybridPhoto[]> => {
+  const fetchPhotosFromMongoDB = useCallback(async (page = 1, limit = 50): Promise<{ photos: HybridPhoto[], pagination: HybridGalleryPagination }> => {
     try {
-      const response = await fetch('/api/fotos-galeria-cloudinary', {
+      // Construir query parameters
+      const queryParams = new URLSearchParams({
+        page: page.toString(),
+        limit: limit.toString(),
+        sortBy: state.filters.sortBy,
+        sortOrder: state.filters.sortOrder,
+        isPublic: 'true',
+        status: 'ready'
+      });
+
+      // Filtros opcionales
+      if (state.filters.eventMoment !== 'all') {
+        queryParams.append('eventMoment', state.filters.eventMoment);
+      }
+      if (state.filters.uploader !== 'all') {
+        queryParams.append('uploaderName', state.filters.uploader);
+      }
+      if (state.filters.source !== 'all') {
+        queryParams.append('uploadSource', state.filters.source === 'local' ? 'original' : state.filters.source);
+      }
+
+      const response = await fetch(`/api/photos?${queryParams}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -128,109 +231,101 @@ export const useHybridGallery = () => {
 
       const data = await response.json();
       
-      // Convertir a formato híbrido
-      return (data.photos || []).map((photo: any): HybridPhoto => ({
-        id: `cloudinary-${photo.cloudinaryId}`,
+      // Convertir respuesta de MongoDB a formato híbrido
+      const photos: HybridPhoto[] = (data.photos || []).map((photo: MongoDBPhotoResponse): HybridPhoto => ({
+        id: photo._id,
         originalName: photo.originalName,
-        uploaderName: photo.uploaderName || 'Invitado',
+        uploaderName: photo.uploader?.name || 'Invitado',
         uploadedAt: photo.uploadedAt,
-        size: photo.size,
-        eventMoment: photo.eventMoment || 'General',
+        size: photo.fileSize,
+        eventMoment: photo.eventMoment || 'general',
         comment: photo.comment,
-        cloudinaryId: photo.cloudinaryId,
-        cloudinaryUrl: photo.cloudinaryUrl,
-        source: 'cloudinary' as const
+        displayUrl: photo.displayUrl || photo.cloudinaryUrl || photo.localPath || '/placeholder.jpg',
+        thumbnailUrl: photo.optimizedThumbnailUrl || photo.thumbnailUrl,
+        source: photo.uploadSource === 'original' ? 'local' : 'cloudinary',
+        filename: photo.filename,
+        mimeType: photo.mimeType,
+        dimensions: photo.dimensions,
+        viewCount: photo.viewCount || 0,
+        status: photo.status,
+        isPublic: photo.isPublic
       }));
+
+      const pagination: HybridGalleryPagination = {
+        page: data.pagination?.page || 1,
+        pages: data.pagination?.totalPages || 1,
+        hasNext: data.pagination?.hasNext || false,
+        hasPrev: data.pagination?.hasPrev || false,
+        total: data.pagination?.total || photos.length
+      };
+
+      return { photos, pagination };
+
     } catch (error) {
-      console.error('Error fetching Cloudinary photos:', error);
-      return [];
+      console.error('Error fetching photos from MongoDB:', error);
+      // 🔄 Fallback: Intentar sistema anterior si MongoDB falla
+      return await fallbackToOriginalSystems();
+    }
+  }, [state.filters.sortBy, state.filters.sortOrder, state.filters.eventMoment, state.filters.uploader, state.filters.source, fallbackToOriginalSystems]);
+
+  /**
+   * 🆕 Obtiene estadísticas desde MongoDB
+   */
+  const fetchStatsFromMongoDB = useCallback(async (): Promise<HybridGalleryStats> => {
+    try {
+      const response = await fetch('/api/photos/stats', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error ${response.status}: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      
+      return {
+        totalPhotos: data.totalPhotos || 0,
+        uploaders: data.uploaders || [],
+        eventMoments: data.eventMoments || [],
+        sourceBreakdown: {
+          cloudinary: data.sourceBreakdown?.cloudinary || 0,
+          local: data.sourceBreakdown?.local || 0
+        },
+        totalViews: data.totalViews || 0
+      };
+
+    } catch (error) {
+      console.error('Error fetching stats from MongoDB:', error);
+      // Fallback stats
+      return {
+        totalPhotos: 0,
+        uploaders: [],
+        eventMoments: [],
+        sourceBreakdown: { cloudinary: 0, local: 0 },
+        totalViews: 0
+      };
     }
   }, []);
 
   /**
-   * Construye estadísticas de la galería híbrida
+   * 🆕 Carga fotos desde MongoDB
    */
-  const buildStats = useCallback((photos: HybridPhoto[]): HybridGalleryStats => {
-    const uploaders = [...new Set(photos.map(p => p.uploaderName))];
-    const eventMoments = [...new Set(photos.map(p => p.eventMoment))];
-    
-    const sourceBreakdown = photos.reduce(
-      (acc, photo) => {
-        acc[photo.source]++;
-        return acc;
-      },
-      { original: 0, cloudinary: 0 }
-    );
-
-    return {
-      totalPhotos: photos.length,
-      uploaders,
-      eventMoments,
-      sourceBreakdown
-    };
-  }, []);
-
-  /**
-   * Aplica filtros a las fotos
-   */
-  const applyFilters = useCallback((photos: HybridPhoto[], filters: HybridGalleryFilters): HybridPhoto[] => {
-    return photos.filter(photo => {
-      // Filtro por momento del evento
-      if (filters.eventMoment !== 'all' && photo.eventMoment !== filters.eventMoment) {
-        return false;
-      }
-
-      // Filtro por uploader
-      if (filters.uploader !== 'all' && photo.uploaderName !== filters.uploader) {
-        return false;
-      }
-
-      // Filtro por fuente
-      if (filters.source !== 'all' && photo.source !== filters.source) {
-        return false;
-      }
-
-      return true;
-    });
-  }, []);
-
-  /**
-   * Carga fotos de ambos sistemas y las combina
-   */
-  const loadPhotos = useCallback(async () => {
+  const loadPhotos = useCallback(async (page = 1) => {
     setState(prev => ({ ...prev, loading: true, error: null }));
 
     try {
-      // Obtener fotos de ambos sistemas en paralelo
-      const [originalPhotos, cloudinaryPhotos] = await Promise.all([
-        fetchOriginalPhotos(),
-        fetchCloudinaryPhotos()
+      // Obtener fotos y estadísticas en paralelo
+      const [{ photos, pagination }, stats] = await Promise.all([
+        fetchPhotosFromMongoDB(page),
+        fetchStatsFromMongoDB()
       ]);
-
-      // Combinar todas las fotos
-      const allPhotos = [...originalPhotos, ...cloudinaryPhotos];
-      
-      // Ordenar por fecha de subida (más reciente primero)
-      allPhotos.sort((a, b) => new Date(b.uploadedAt).getTime() - new Date(a.uploadedAt).getTime());
-
-      // Aplicar filtros
-      const filteredPhotos = applyFilters(allPhotos, state.filters);
-
-      // Construir estadísticas
-      const stats = buildStats(allPhotos);
-
-      // TODO: Implementar paginación si es necesario
-      const pagination: HybridGalleryPagination = {
-        page: 1,
-        pages: 1,
-        hasNext: false,
-        hasPrev: false,
-        total: filteredPhotos.length
-      };
 
       setState(prev => ({
         ...prev,
-        photos: filteredPhotos,
+        photos,
         stats,
         pagination,
         loading: false
@@ -243,7 +338,7 @@ export const useHybridGallery = () => {
         error: error instanceof Error ? error.message : 'Error desconocido al cargar fotos'
       }));
     }
-  }, [fetchOriginalPhotos, fetchCloudinaryPhotos, state.filters, applyFilters, buildStats]);
+  }, [fetchPhotosFromMongoDB, fetchStatsFromMongoDB]);
 
   /**
    * Actualiza filtros y recarga fotos
@@ -259,38 +354,62 @@ export const useHybridGallery = () => {
    * Refresca la galería
    */
   const refresh = useCallback(() => {
-    loadPhotos();
+    loadPhotos(1);
   }, [loadPhotos]);
 
   /**
-   * Obtiene la URL optimizada para mostrar una foto
+   * Cambia a página específica
+   */
+  const goToPage = useCallback((page: number) => {
+    loadPhotos(page);
+  }, [loadPhotos]);
+
+  /**
+   * 🆕 Obtiene la URL optimizada para mostrar una foto (desde MongoDB)
    */
   const getPhotoDisplayUrl = useCallback((photo: HybridPhoto, size: 'thumbnail' | 'compressed' | 'original' = 'compressed'): string => {
-    if (photo.source === 'cloudinary' && photo.cloudinaryId) {
-      // Construir URL de Cloudinary con transformaciones
-      const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
-      if (!cloudName) {
-        console.warn('Cloudinary cloud name not configured');
-        return '/placeholder.jpg';
-      }
+    // Si tenemos thumbnail y pedimos thumbnail, usarlo
+    if (size === 'thumbnail' && photo.thumbnailUrl) {
+      return photo.thumbnailUrl;
+    }
 
+    // Para fotos de Cloudinary, generar transformaciones dinámicas
+    if (photo.source === 'cloudinary' && photo.displayUrl && photo.displayUrl.includes('cloudinary.com')) {
       const transformations = {
         thumbnail: 'w_200,h_200,c_fill,q_auto:good,f_auto',
         compressed: 'w_800,h_600,c_fit,q_auto:good,f_auto',
         original: 'q_auto:best,f_auto'
       };
 
-      return `https://res.cloudinary.com/${cloudName}/image/upload/${transformations[size]}/${photo.cloudinaryId}`;
-    } else {
-      // Usar sistema original
-      return photo.paths?.[size] || photo.paths?.original || '/placeholder.jpg';
+      // Insertar transformaciones en la URL de Cloudinary
+      return photo.displayUrl.replace('/upload/', `/upload/${transformations[size]}/`);
+    }
+
+    // Para fotos locales o fallback, usar la URL base
+    return photo.displayUrl || '/placeholder.jpg';
+  }, []);
+
+  /**
+   * 🆕 Incrementa el contador de vistas de una foto
+   */
+  const incrementPhotoView = useCallback(async (photoId: string) => {
+    try {
+      await fetch(`/api/photos/${photoId}/view`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+    } catch (error) {
+      console.warn('Failed to increment photo view:', error);
+      // No mostrar error al usuario, es una métrica opcional
     }
   }, []);
 
   // Cargar fotos al montar y cuando cambien los filtros
   useEffect(() => {
-    loadPhotos();
-  }, [state.filters.eventMoment, state.filters.uploader, state.filters.source]);
+    loadPhotos(1);
+  }, [loadPhotos, state.filters.eventMoment, state.filters.uploader, state.filters.source, state.filters.sortBy, state.filters.sortOrder]);
 
   return {
     photos: state.photos,
@@ -301,6 +420,8 @@ export const useHybridGallery = () => {
     filters: state.filters,
     setFilters,
     refresh,
-    getPhotoDisplayUrl
+    goToPage,
+    getPhotoDisplayUrl,
+    incrementPhotoView
   };
 };

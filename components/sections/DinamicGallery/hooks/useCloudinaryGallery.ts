@@ -151,7 +151,7 @@ export const useCloudinaryGallery = () => {
 
       throw error;
     }
-  }, []);
+  }, [state]);
 
   // Función para obtener detalles de una foto específica
   const getPhotoDetails = useCallback(async (publicId: string) => {
@@ -193,7 +193,7 @@ export const useCloudinaryGallery = () => {
 
       return { ...prev, filters: updatedFilters };
     });
-  }, []);
+  }, [state]);
 
   // Función para cambiar página
   const setPage = useCallback((page: number) => {
@@ -230,7 +230,7 @@ export const useCloudinaryGallery = () => {
   // Cargar fotos inicialmente y cuando cambien los filtros
   useEffect(() => {
     loadPhotos();
-  }, [state.filters]);
+  }, [loadPhotos]);
 
   return {
     // Estado

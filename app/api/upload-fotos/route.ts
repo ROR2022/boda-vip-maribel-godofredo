@@ -7,11 +7,14 @@ import { existsSync } from 'fs';
 import path from 'path';
 
 // Importación defensiva de Sharp para Vercel
-let sharp: typeof import('sharp') | null = null;
-try {
-  sharp = require('sharp');
-} catch (error) {
-  console.warn('Sharp no disponible, usando fallback sin compresión:', error);
+async function getSharp(): Promise<typeof import('sharp') | null> {
+  try {
+    const sharpModule = await import('sharp');
+    return sharpModule.default;
+  } catch (error) {
+    console.warn('Sharp no disponible, usando fallback sin compresión:', error);
+    return null;
+  }
 }
 
 // Configuración del upload
@@ -94,6 +97,9 @@ const compressImage = async (
     console.log('📁 Compressed path:', compressedPath);
     console.log('📁 Thumbnail path:', thumbnailPath);
 
+    // Obtener Sharp dinámicamente
+    const sharp = await getSharp();
+    
     // Verificar que Sharp esté disponible
     if (!sharp) {
       console.warn('⚠️  Sharp not available, using fallback without compression');
