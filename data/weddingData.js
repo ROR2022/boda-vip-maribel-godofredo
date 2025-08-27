@@ -12,13 +12,15 @@ export const weddingData = {
 
   // 👨‍👩‍👧‍👦 Información de los padres
   parents: {
+    // Eduardo Briz Solis y Maria de la luz Sanchez Minor
     bride: {
-      mother: "Vanessa Corpus",
-      father: "Carlos Aranda"
+      mother: "María de la Luz Sánchez Minor",
+      father: "Eduardo Briz Solis"
     },
+    // José Guadalupe Mojica Espinosa y Andrea Tapia Lobaco
     groom: {
-      mother: "Karen Corpus",
-      father: "Hugo Lizagarra"
+      mother: "Andrea Tapia Lobaco +Finado",
+      father: "José Guadalupe Mojica Espinosa +Finado"
     },
     message: "A nuestros queridos padres: gracias por darnos la vida, cuidarnos, guiarnos y prepararnos para este momento tan especial. Su amor y apoyo son la base sobre la que construiremos nuestro hogar."
   },

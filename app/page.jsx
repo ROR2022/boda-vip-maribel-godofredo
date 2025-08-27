@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 
 //import Navigation from "../components/navigation"
 import HeroSection from "../components/sections/HeroSection"
-//import ParentsSection from "../components/sections/ParentsSection"
+import ParentsSection from "../components/sections/ParentsSection"
 import DateSection from "../components/sections/DateSection"
 import CeremonySection from "../components/sections/CeremonySection"
 import TimelineSection from "../components/sections/TimelineSection"
@@ -67,8 +67,9 @@ export default function WeddingInvitation() {
       
       {/* 🏆 Secciones principales con paleta mexicana */}
       <HeroSection />
-      {/* <ParentsSection /> */}
+      
       <DateSection />
+      <ParentsSection />
       <CeremonySection />
       {/* <ReceptionSection /> */}
       <TimelineSection />
