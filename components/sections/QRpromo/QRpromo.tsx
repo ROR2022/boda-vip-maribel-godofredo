@@ -254,7 +254,11 @@ const QRpromo = () => {
             </div>
           </div>
 
-          <div>
+          <div
+          style={{
+            display: "none",
+          }}
+          >
             <h3 
             style={{
               minWidth: "300px",
