@@ -19,7 +19,7 @@ export const weddingData = {
     },
     // José Guadalupe Mojica Espinosa y Andrea Tapia Lobaco
     groom: {
-      mother: "Andrea Tapia Lobaco +Finado",
+      mother: "Andrea Tapia Lobaco +Finada",
       father: "José Guadalupe Mojica Espinosa +Finado"
     },
     message: "A nuestros queridos padres: gracias por darnos la vida, cuidarnos, guiarnos y prepararnos para este momento tan especial. Su amor y apoyo son la base sobre la que construiremos nuestro hogar."
@@ -37,7 +37,7 @@ export const weddingData = {
 
   // ⛪ Información de la ceremonia
   ceremony: {
-    time: "7:00 p.m",
+    time: "1:30 p.m",
     name: "Salón Colibrí",
     address: "C. Morelos Manzana 001, La Conchita, 56600 Chalco de Díaz Covarrubias, Méx.",
     type: "Ceremonia",

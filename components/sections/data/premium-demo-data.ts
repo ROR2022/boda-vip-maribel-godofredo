@@ -83,63 +83,231 @@ export const premiumDemoData = {
     subtitle: "Momentos especiales",
     description: "Una colección de nuestras fotos favoritas preparándonos para este gran día",
     images: [
+      {
+        src: "/images/g&m-histo6.jpeg",
+        alt: "Sesión fotográfica 0",
+        caption: "Momentos Inolvidables",
+        category: "celebracion"
+      },
+      {
+        src: "/images/g&m-names4.jpeg",
+        alt: "Sesión fotográfica 00",
+        caption: "Momentos Inolvidables",
+        category: "celebracion"
+      },
       { 
-        src: "/images/boda1.jpeg", 
+        src: "/images/g&m1.jpg", 
         alt: "Sesión fotográfica 1", 
         caption: "Momentos Inolvidables",
         category: "preparacion"
       },
       { 
-        src: "/images/boda2.jpeg", 
+        src: "/images/g&m2.jpg", 
         alt: "Sesión fotográfica 2", 
         caption: "Momentos Inolvidables",
         category: "vestido"
       },
       { 
-        src: "/images/boda3.jpeg", 
+        src: "/images/g&m3.jpg", 
         alt: "Sesión fotográfica 3", 
         caption: "Momentos Inolvidables",
         category: "alegria"
       },
       { 
-        src: "/images/boda4.jpeg", 
+        src: "/images/g&m4.jpg", 
         alt: "Sesión fotográfica 4", 
         caption: "Momentos Inolvidables",
         category: "celebracion"
       },
       {
-        src: "/images/boda5.jpeg",
+        src: "/images/g&m5.jpg",
         alt: "Sesión fotográfica 5",
         caption: "Momentos Inolvidables",
         category: "celebracion"
       },
       {
-        src: "/images/boda6.jpeg",
+        src: "/images/g&m6.jpg",
         alt: "Sesión fotográfica 6",
         caption: "Momentos Inolvidables",
         category: "celebracion"
       },
       {
-        src: "/images/boda7.jpeg",
+        src: "/images/g&m7.jpg",
         alt: "Sesión fotográfica 7",
         caption: "Momentos Inolvidables",
         category: "celebracion"
       },
       {
-        src: "/images/boda8.jpeg",
+        src: "/images/g&m8.jpg",
         alt: "Sesión fotográfica 8",
         caption: "Momentos Inolvidables",
         category: "celebracion"
       },
       {
-        src: "/images/boda9.jpeg",
+        src: "/images/g&m9.jpg",
         alt: "Sesión fotográfica 9",
         caption: "Momentos Inolvidables",
         category: "celebracion"
       },
       {
-        src: "/images/boda10.jpeg",
+        src: "/images/g&m10.jpg",
         alt: "Sesión fotográfica 10",
+        caption: "Momentos Inolvidables",
+        category: "celebracion"
+      },
+      {
+        src: "/images/dosEstrellas.png",
+        alt: "Sesión fotográfica 0",
+        caption: "Momentos Inolvidables",
+        category: "celebracion"
+      },
+      {
+        src: "/images/crecian.png",
+        alt: "Sesión fotográfica 9",
+        caption: "Momentos Inolvidables",
+        category: "celebracion"
+      },
+      { 
+        src: "/images/g&m11.jpg", 
+        alt: "Sesión fotográfica 1", 
+        caption: "Momentos Inolvidables",
+        category: "preparacion"
+      },
+      { 
+        src: "/images/g&m12.jpg", 
+        alt: "Sesión fotográfica 2", 
+        caption: "Momentos Inolvidables",
+        category: "vestido"
+      },
+      { 
+        src: "/images/g&m13.jpg", 
+        alt: "Sesión fotográfica 3", 
+        caption: "Momentos Inolvidables",
+        category: "alegria"
+      },
+      {
+        src: "/images/separadas.png",
+        alt: "Sesión fotográfica 9",
+        caption: "Momentos Inolvidables",
+        category: "celebracion"
+      },
+      { 
+        src: "/images/g&m14.jpg", 
+        alt: "Sesión fotográfica 4", 
+        caption: "Momentos Inolvidables",
+        category: "celebracion"
+      },
+      {
+        src: "/images/g&m15.jpg",
+        alt: "Sesión fotográfica 5",
+        caption: "Momentos Inolvidables",
+        category: "celebracion"
+      },
+      {
+        src: "/images/g&m16.jpg",
+        alt: "Sesión fotográfica 6",
+        caption: "Momentos Inolvidables",
+        category: "celebracion"
+      },
+      {
+        src: "/images/despues.png",
+        alt: "Sesión fotográfica 9",
+        caption: "Momentos Inolvidables",
+        category: "celebracion"
+      },
+      {
+        src: "/images/g&m17.jpg",
+        alt: "Sesión fotográfica 7",
+        caption: "Momentos Inolvidables",
+        category: "celebracion"
+      },
+      {
+        src: "/images/g&m18.jpg",
+        alt: "Sesión fotográfica 8",
+        caption: "Momentos Inolvidables",
+        category: "celebracion"
+      },
+      {
+        src: "/images/g&m19.jpg",
+        alt: "Sesión fotográfica 9",
+        caption: "Momentos Inolvidables",
+        category: "celebracion"
+      },
+      {
+        src: "/images/tarde.png",
+        alt: "Sesión fotográfica 9",
+        caption: "Momentos Inolvidables",
+        category: "celebracion"
+      },
+      {
+        src: "/images/g&m20.jpg",
+        alt: "Sesión fotográfica 10",
+        caption: "Momentos Inolvidables",
+        category: "celebracion"
+      },
+      { 
+        src: "/images/g&m21.jpg", 
+        alt: "Sesión fotográfica 1", 
+        caption: "Momentos Inolvidables",
+        category: "preparacion"
+      },
+      { 
+        src: "/images/g&m22.jpg", 
+        alt: "Sesión fotográfica 2", 
+        caption: "Momentos Inolvidables",
+        category: "vestido"
+      },
+      {
+        src: "/images/y.png",
+        alt: "Sesión fotográfica 9",
+        caption: "Momentos Inolvidables",
+        category: "celebracion"
+      },
+      { 
+        src: "/images/g&m23.jpg", 
+        alt: "Sesión fotográfica 3", 
+        caption: "Momentos Inolvidables",
+        category: "alegria"
+      },
+      { 
+        src: "/images/g&m24.jpg", 
+        alt: "Sesión fotográfica 4", 
+        caption: "Momentos Inolvidables",
+        category: "celebracion"
+      },
+      {
+        src: "/images/g&m25.jpg",
+        alt: "Sesión fotográfica 5",
+        caption: "Momentos Inolvidables",
+        category: "celebracion"
+      },
+      {
+        src: "/images/despues2.png",
+        alt: "Sesión fotográfica 9",
+        caption: "Momentos Inolvidables",
+        category: "celebracion"
+      },
+      {
+        src: "/images/g&m26.jpg",
+        alt: "Sesión fotográfica 6",
+        caption: "Momentos Inolvidables",
+        category: "celebracion"
+      },
+      {
+        src: "/images/g&m27.jpg",
+        alt: "Sesión fotográfica 7",
+        caption: "Momentos Inolvidables",
+        category: "celebracion"
+      },
+      {
+        src: "/images/g&m28.jpg",
+        alt: "Sesión fotográfica 8",
+        caption: "Momentos Inolvidables",
+        category: "celebracion"
+      },
+      {
+        src: "/images/porFin.png",
+        alt: "Sesión fotográfica 9",
         caption: "Momentos Inolvidables",
         category: "celebracion"
       },

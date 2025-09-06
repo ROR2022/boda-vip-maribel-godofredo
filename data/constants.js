@@ -13,7 +13,7 @@ export const LOCATIONS = {
 
 // 💬 Templates de mensajes para WhatsApp
 export const WHATSAPP_MESSAGES = {
-  rsvp: "¡Hola! Confirmo mi asistencia a la boda de Maribel y Godofredo el 13 de septiembre de 2025."
+  rsvp: "¡Hola! Confirmo mi asistencia a la boda de Maribel y Godofredo el 29 de Noviembre de 2025."
 }
 
 // 🎨 Configuraciones de tema - Paleta VIP Mexicana

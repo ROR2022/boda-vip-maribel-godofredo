@@ -78,7 +78,7 @@ const QRpromo = () => {
         ></div>
       </div> */}
 
-      <div className="max-w-4xl mx-auto relative z-10">
+      <div className="max-w-2xl mx-auto relative z-10">
         {/* Header Badge */}
         <div style={{ display: "none" }} className="text-center mb-8">
           <div
@@ -98,7 +98,7 @@ const QRpromo = () => {
           style={{
             fontFamily: "cursive",
           }}
-          className="flex flex-col items-center justify-center gap-12 bg-slate-100 rounded-2xl p-2"
+          className="flex flex-col items-center justify-center gap-12 bg-slate-100 rounded-2xl py-8"
         >
           {/* Sección de Texto */}
           <div className="flex-1 text-center lg:text-left">
@@ -252,6 +252,14 @@ const QRpromo = () => {
                 </p>
               </div>
             </div>
+          </div>
+
+          <div>
+            <h3 
+            style={{
+              minWidth: "300px",
+            }}
+            className="text-3xl text-black border-2 rounded-2xl p-6">MESA #</h3>
           </div>
         </div>
 
