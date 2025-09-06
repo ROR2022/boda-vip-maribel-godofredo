@@ -58,15 +58,8 @@ export const weddingData = {
     {
       id: "bienvenida",
       name: "Bienvenida",
-      time: "11:00",
+      time: "1:30 pm",
       icon: "🥳", // Fiesta - símbolo de celebración
-      color: "primary"
-    },
-    {
-      id: "ceremonia",
-      name: "Ceremonia",
-      time: "12:00",
-      icon: "💍", // Anillo de compromiso - símbolo universal del matrimonio
       color: "primary"
     },
     {

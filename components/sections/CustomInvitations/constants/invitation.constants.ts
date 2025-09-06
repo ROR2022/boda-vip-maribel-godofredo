@@ -9,9 +9,9 @@ export const ADMIN_PASSWORD = "admin1234";
 export const EVENT_INFO: EventInfo = {
   groomName: "Godofredo",
   brideName: "Maribel",
-  date: "Sábado 27 de Septiembre 2025",
-  time: "6:00 PM",
-  venue: "Eventos Casablanca",
+  date: "Sábado 29 de Noviembre 2025",
+  time: "1:30 PM",
+  venue: "Salón Colibrí",
   dressCode: "Formal -Blanco solo la novia-",
   invitationUrl: "https://boda-vip-maribel-godofredo.vercel.app/"
 } as const;
