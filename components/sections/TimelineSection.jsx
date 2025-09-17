@@ -52,13 +52,13 @@ export default function TimelineSection() {
 
         <div className="max-w-4xl mx-auto">
           <div className="grid md:grid-cols-2 gap-12 items-center bg-transparent">
-            <div className="relative w-full h-96 rounded-2xl overflow-hidden border-2 border-dorado/30 shadow-xl">
+            <div className="relative w-full h-96 rounded-2xl overflow-hidden shadow-xl">
               <div className="w-full h-full relative">
                 <Image
-                  src="/images/boda3.png"
+                  src="/images/godo3.jpg"
                   alt="Celebración"
                   fill
-                  className="object-cover"
+                  className="object-contain"
                   sizes="(max-width: 768px) 100vw, 50vw"
                 />
               </div>

@@ -15,7 +15,7 @@ export default function HeroSection() {
     <section 
       className="min-h-screen flex flex-col justify-center items-center relative border-mexican"
       style={{
-        backgroundImage: `url('${'/images/boda8.jpeg'}')`,
+        backgroundImage: `url('${'/images/godo4.jpg'}')`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
